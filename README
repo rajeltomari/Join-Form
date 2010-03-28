@@ -8,9 +8,37 @@
 | of Nova and CodeIgniter.
 +--------------------------------------------------------
 
-Documentation will be provided when application is developed.
+The following application will alter your join form for use with the UCIP organization. To install this
+application you need to perform the following steps.
+
+1. Use the included nova_ucip_join.sql file to add the needed sql table fields to your nova installation.
+
+2. Upload application/controllers/main.php to your application/controllers folder of your Nova install replacing 
+the existing one if you haven't already modified this file. If you already have changes in this file, it's best 
+that you just take the contents of this file and add it into your existing main.php file.
+
+3. Add the following line into your base_lang.php for your associated language(s) after the rest of the includes 
+and before the Global items.
+	/* include UCIP Join Language file */
+	include_once APPPATH .'language/'. $language . '/ucip_lang.php';
+
+4. Upload application/language/english/ucip_lang.php to your 
+application/views/language/english folder of your Nova install. Translate this page into other languages and upload
+them to the appropriate language directories. (If you would like your language included into a future release, 
+please contact me via email.)
+
+7. Upload application/views/_base_override/main/pages/main_join_2.php to your
+application/views/_base_override/main/pages folder of your Nova install.
+
+If you experience any issues please submit a bug report on http://redmine.stelth2000inc.com/projects/nova-mibbit-chat.
+
+You can always get the latest SVN trunk from http://redmine.stelth2000inc.com/projects/nova-mibbit-chat as well.
 
 -------------------------------------
 Changelog - Dates are in Epoch time
+
+1269801531: Fully started work on altering the join form for UCIP. Included with this will be the needed email and
+			bio adjustments. All of this is still in development and not ready for release. If you do use it, you
+			will find things broken and incomplete.
 
 1244254514: Initial submission to SVN repository.

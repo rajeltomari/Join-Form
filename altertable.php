@@ -1,1 +1,0 @@
-$sql = "ALTER TABLE `nova_players` ADD `ucip` ENUM(\'y\',\'n\') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `date_of_birth`, ADD `ucip_dbid` INT(5) NULL DEFAULT NULL AFTER `ucip`";

@@ -1,125 +1,129 @@
-<?php echo text_output($header, 'h1', 'page_head');?>
+<?php echo text_output($header, 'h1', 'page-head');?>
 
 <?php echo form_open('main/join');?>
-	<?php echo lang_output('labels_player_info', 'h3');?>
-	<table class="table100">
-		<tr>
-			<td class="cell_label"><?php echo text_output(ucwords($this->lang->line('labels_playerbio_name')), '');?></td>
-			<td class="cell_spacer"></td>
-			<td><?php echo form_input($inputs['name']);?></td>
-		</tr>
-		<tr>
-			<td class="cell_label"><?php echo text_output(ucwords($this->lang->line('labels_playerbio_email')), '');?></td>
-			<td class="cell_spacer"></td>
-			<td><?php echo form_input($inputs['email']);?></td>
-		</tr>
-		<tr>
-			<td class="cell_label"><?php echo text_output(ucwords($this->lang->line('labels_join_password')), '');?></td>
-			<td class="cell_spacer"></td>
-			<td><?php echo form_password($inputs['password']);?></td>
-		</tr>
-		<?php echo table_row_spacer(3, 20);?>
-		<tr>
-			<td class="cell_label"><?php echo text_output(ucwords($this->lang->line('labels_playerbio_dob')), '');?></td>
-			<td class="cell_spacer"></td>
-			<td><?php echo form_input($inputs['dob']);?></td>
-		</tr>
-		<?php echo table_row_spacer(3, 20);?>
-		<tr>
-			<td class="cell_label"><?php echo text_output(ucwords($this->lang->line('labels_ucip_member')), '');?></td>
-			<td class="cell_spacer"></td>
-			<td><?php echo form_dropdown('ucip', $drop_down['ucip'], 'id="ucip"', '');?></td>
-		</tr>
-		<?php echo table_row_spacer(3, 20);?>
-		<tr>
-			<td class="cell_label"><?php echo text_output(ucwords($this->lang->line('labels_ucip_dbid')), '');?></td>
-			<td class="cell_spacer"></td>
-			<td><?php echo form_input($inputs['dbid']);?></td>
-		</tr>
-		<?php echo table_row_spacer(3, 20);?>
-		<tr>
-			<td class="cell_label"><?php echo text_output(ucwords($this->lang->line('labels_playerbio_im')), '');?></td>
-			<td class="cell_spacer"></td>
-			<td>
-				<?php echo lang_output('labels_join_im_instructions', 'span', 'font80 orange bold');?><br />
-				<?php echo form_textarea($inputs['im']);?>
-			</td>
-		</tr>
-	</table><br />
-	
-	<?php echo lang_output('labels_character', 'h3');?>
-	<table class="table100">
-		<tr>
-			<td class="cell_label"><?php echo text_output(ucwords($this->lang->line('labels_join_first_name')), '');?></td>
-			<td class="cell_spacer"></td>
-			<td><?php echo form_input($inputs['first_name']);?></td>
-		</tr>
-		<tr>
-			<td class="cell_label"><?php echo text_output(ucwords($this->lang->line('labels_join_middle_name')), '');?></td>
-			<td class="cell_spacer"></td>
-			<td><?php echo form_input($inputs['middle_name']);?></td>
-		</tr>
-		<tr>
-			<td class="cell_label"><?php echo text_output(ucwords($this->lang->line('labels_join_last_name')), '');?></td>
-			<td class="cell_spacer"></td>
-			<td><?php echo form_input($inputs['last_name']);?></td>
-		</tr>
-		<tr>
-			<td class="cell_label"><?php echo text_output(ucwords($this->lang->line('labels_join_suffix')), '');?></td>
-			<td class="cell_spacer"></td>
-			<td><?php echo form_input($inputs['suffix']);?></td>
-		</tr>
-		<?php echo table_row_spacer(3, 20);?>
-		<tr>
-			<td class="cell_label"><?php echo text_output(ucwords($this->lang->line('labels_position')), '');?></td>
-			<td class="cell_spacer"></td>
-			<td>
-				<?php echo form_dropdown_position('position_1', $selected_position, 'id="position"', 'open');?>
-				&nbsp; <span id="loading_update" class="hidden fontSmall gray"><?php echo img($loading);?></span>
-				<p id="position_desc" class="fontSmall gray"><?php echo text_output($pos_desc, '');?></p>
-			</td>
-		</tr>
-	</table><br />
+	<div id="tabs">
+		<ul>
+			<li><a href="#one"><span><?php echo $label['user_info'];?></span></a></li>
+			<li><a href="#two"><span><?php echo $label['character'];?></span></a></li>
+			<li><a href="#three"><span><?php echo $label['character_info'];?></span></a></li>
 
-	<?php if (isset($join)): ?>
-		<?php foreach ($join as $a): ?>
-			<?php if (isset($a['fields'])): ?>
-				<?php echo text_output($a['name'], 'h3');?>
-				
-				<table class="table100">
-					<tbody>
-						
-					<?php foreach ($a['fields'] as $f): ?>
-						<tr>
-							<td class="cell_label"><?php echo $f['field_label'];?></td>
-							<td class="cell_spacer"></td>
-							<td><?php echo $f['input'];?></td>
-						</tr>
-					<?php endforeach; ?>
-					
-					</tbody>
-				</table><br />
+			<?php if ($this->options['use_sample_post'] == 'y'): ?>
+				<li><a href="#four"><span><?php echo $label['samplepost'];?></span></a></li>
+			<?php endif;?>
+		</ul>
+
+		<div id="one">
+			<?php echo text_output($label['user_info'], 'h3', 'page-subhead');?>
+			<div class="indent-left">
+				<p>
+					<kbd><?php echo $label['name'];?></kbd>
+					<?php echo form_input($inputs['name']);?>
+				</p>
+
+				<p>
+					<kbd><?php echo $label['email'];?></kbd>
+					<?php echo form_input($inputs['email']);?>
+				</p>
+
+				<p>
+					<kbd><?php echo $label['password'];?></kbd>
+					<?php echo form_password($inputs['password']);?>
+				</p>
+
+				<p>
+					<kbd><?php echo $label['dob'];?></kbd>
+					<?php echo form_input($inputs['dob']);?>
+				</p>
+
+				<p>
+					<kbd><?php echo $label['im'];?></kbd>
+					<?php echo text_output($label['im_inst'], 'span', 'fontSmall gray');?><br />
+					<?php echo form_textarea($inputs['im']);?>
+				</p>
+			</div>
+		</div>
+
+		<div id="two">
+			<?php echo text_output($label['character'], 'h3', 'page-subhead');?>
+
+			<div class="indent-left">
+				<p>
+					<kbd><?php echo $label['fname'];?></kbd>
+					<?php echo form_input($inputs['first_name']);?>
+				</p>
+
+				<p>
+					<kbd><?php echo $label['mname'];?></kbd>
+					<?php echo form_input($inputs['middle_name']);?>
+				</p>
+
+				<p>
+					<kbd><?php echo $label['lname'];?></kbd>
+					<?php echo form_input($inputs['last_name']);?>
+				</p>
+
+				<p>
+					<kbd><?php echo $label['suffix'];?></kbd>
+					<?php echo form_input($inputs['suffix']);?>
+				</p>
+
+				<p>
+					<kbd><?php echo $label['position'];?></kbd>
+					<?php echo form_dropdown_position('position_1', $selected_position, 'id="position"', 'open');?>
+					&nbsp; <span id="loading_update" class="hidden fontSmall gray"><?php echo img($loading);?></span>
+					<p id="position_desc" class="fontSmall gray"><?php echo text_output($pos_desc, '');?></p>
+				</p>
+
+				<p>
+					<kbd><?php echo $label['ucip_member'];?></kbd>
+					<?php echo form_radio($inputs['ucip_member_yes']) .' '. form_label($label['yes'], 'ucip_member_yes');?>
+					<?php echo form_radio($inputs['ucip_member_no']) .' '. form_label($label['no'], 'ucip_member_no');?>
+				</p>
+
+				<p>
+					<kbd><?php echo $label['ucip_dbid'];?></kbd>
+					<?php echo form_input($inputs['ucip_dbid']);?>
+				</p>
+			</div>
+		</div>
+
+		<div id="three">
+			<?php if (isset($join)): ?>
+				<?php foreach ($join as $a): ?>
+					<?php if (isset($a['fields'])): ?>
+						<?php echo text_output($a['name'], 'h3', 'page-subhead');?>
+
+						<div class="indent-left">
+							<?php foreach ($a['fields'] as $f): ?>
+								<p>
+									<kbd><?php echo $f['field_label'];?></kbd>
+									<?php echo $f['input'];?>
+								</p>
+							<?php endforeach; ?>
+						</div><br />
+					<?php endif; ?>
+				<?php endforeach; ?>
 			<?php endif; ?>
-		<?php endforeach; ?>
-	<?php endif; ?>
-	
-	<?php if ($this->settings['use_sample_post'] == 'y'): ?>
-		<?php echo lang_output('labels_join_other', 'h3');?>
-		<table class="table100">
-			<?php if ($this->settings['use_sample_post'] == 'y'): ?>
-				<tr>
-					<td colspan="2"></td>
-					<td><?php echo text_output($sample_post_msg, 'p', 'font80 bold gray');?></td>
-				</tr>
-				<tr>
-					<td class="cell_label"><?php echo text_output(ucwords($this->lang->line('labels_join_sample_post')), '');?></td>
-					<td class="cell_spacer"></td>
-					<td><?php echo form_textarea($inputs['sample_post']);?></td>
-				</tr>
-			<?php endif; ?>
-		</table><br />
-	<?php endif; ?>
-	
-	<?php echo form_hidden('submit', 'y');?>
-	<p><?php echo form_button($button_submit);?></p>
+		</div>
+
+		<?php if ($this->options['use_sample_post'] == 'y'): ?>
+			<div id="four">
+				<?php echo text_output($label['samplepost'], 'h3', 'page-subhead');?>
+
+				<div class="indent-left">
+					<?php echo text_output($sample_post_msg, 'p', 'bold gray');?>
+					<?php echo form_textarea($inputs['sample_post']);?>
+				</div>
+			</div>
+		<?php endif; ?>
+	</div>
+
+	<div class="indent-left">
+		<?php echo form_hidden('submit', 'y');?>
+		<p>
+			<?php echo form_button($button['submit']);?>
+			&nbsp;
+			<?php echo form_button($button['next']);?>
+		</p>
+	</div>
 <?php echo form_close();?>
