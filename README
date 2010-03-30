@@ -49,11 +49,9 @@ application/views/_base_override/admin/pages folder of your Nova install.
 
 11. Upload application/models/characters_model.php to your application/models folder of your Nova install.
 
-If you experience any issues please submit a bug report on
-http://redmine.stelth2000inc.com/projects/nova-ucip-join-form/issues.
+If you experience any issues please submit a bug report on http://github.com/demonicpagan/UCIP-Join-Form/issues.
 
-You can always get the latest SVN trunk from http://redmine.stelth2000inc.com/projects/show/nova-ucip-join-form
-as well.
+You can always get the latest source from http://github.com/demonicpagan/UCIP-Join-Form as well.
 
 -------------------------------------
 Changelog - Dates are in Epoch time
