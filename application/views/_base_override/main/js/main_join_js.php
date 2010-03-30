@@ -42,16 +42,14 @@
 
 			return false;
 		});
-	});
 
-	$(document).ready(function(){
-		$("#ucipid").css("display","none");
+		$('#ucipid').css('display','none');
 
-		$(".ucipdbid").click(function(){
-			if ($('input[name=ucip_member]:checked').val() == "Yes" ) {
-				$("#ucipid").slideDown("fast"); //Slide Down Effect
+		$('.ucipdbid').click(function(){
+			if ($('input[name=ucip_member]:checked').val() == 'yes' ) {
+				$('#ucipid').slideDown('fast'); //Slide Down Effect
 			} else {
-				$("#ucipid").slideUp("fast"); //Slide Up Effect
+				$('#ucipid').slideUp('fast'); //Slide Up Effect
 			}
 		});
 	});

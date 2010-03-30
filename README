@@ -41,17 +41,27 @@ application/views/_base_override/main/pages folder of your Nova install.
 8. Upload application/views/_base_override/main/pages/personnel_character.php to your
 application/views/_base_override/main/pages folder of your Nova install.
 
-9. Upload application/views/_base_override/admin/pages/characters_bio.php to your
+9. Upload application/views/_base_override/main/js/main_join_js.php to your
+application/views/_base_override/main/js folder of your Nova install.
+
+10. Upload application/views/_base_override/admin/pages/characters_bio.php to your
 application/views/_base_override/admin/pages folder of your Nova install.
 
-10. Upload application/models/characters_model.php to your application/models folder of your Nova install.
+11. Upload application/models/characters_model.php to your application/models folder of your Nova install.
 
-If you experience any issues please submit a bug report on http://redmine.stelth2000inc.com/projects/nova-mibbit-chat.
+If you experience any issues please submit a bug report on
+http://redmine.stelth2000inc.com/projects/nova-ucip-join-form/issues.
 
-You can always get the latest SVN trunk from http://redmine.stelth2000inc.com/projects/nova-mibbit-chat as well.
+You can always get the latest SVN trunk from http://redmine.stelth2000inc.com/projects/show/nova-ucip-join-form
+as well.
 
 -------------------------------------
 Changelog - Dates are in Epoch time
+
+1269985580: Added jQuery hide/show for the UCIP DBID field on the join form. When yes is selected, that field will
+			show. When no is selected, the field will hide.
+			Updated README with the proper URLS for the project and issue reporting and included where to put the
+			needed js for latest addition.
 
 1269939186: Handled email notification sent to GMs to show if member is a part of UCIP and their DBID. Had to write
 			a couple db queries in characters_model.php for this. Finished the view alterations.
