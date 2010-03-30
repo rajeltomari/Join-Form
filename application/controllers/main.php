@@ -436,6 +436,287 @@ class Main extends Main_base {
 		/* render the template */
 		$this->template->render();
 	}
+
+	function _email($type = '', $data = '')
+	{
+		/* load the libraries */
+		$this->load->library('email');
+		$this->load->library('parser');
+
+		/* load the language file */
+		$this->lang->load('email');
+
+		/* define the variables */
+		$email = FALSE;
+
+		switch ($type)
+		{
+			case 'contact':
+				/* set the email data */
+				$email_data = array(
+					'email_subject' => $data['subject'],
+					'email_from' => ucfirst(lang('time_from')) .': '. $data['name'] .' - '. $data['email'],
+					'email_content' => nl2br($data['message'])
+				);
+
+				/* where should the email be coming from */
+				$em_loc = email_location('main_contact', $this->email->mailtype);
+
+				/* parse the message */
+				$message = $this->parser->parse($em_loc, $email_data, TRUE);
+
+				switch ($data['to'])
+				{ /* figure out who the emails are going to */
+					case 1:
+						/* get the game masters */
+						$gm = $this->user->get_gm_emails();
+
+						/* set the TO variable */
+						$to = implode(',', $gm);
+
+						break;
+
+					case 2:
+						/* get the command staff */
+						$command = $this->user->get_command_staff_emails();
+
+						/* set the TO variable */
+						$to = implode(',', $command);
+
+						break;
+
+					case 3:
+						/* get the webmasters */
+						$webmaster = $this->user->get_webmasters_emails();
+
+						/* set the TO variable */
+						$to = implode(',', $webmaster);
+
+						break;
+				}
+
+				/* set the parameters for sending the email */
+				$this->email->from($data['email'], $data['name']);
+				$this->email->to($to);
+				$this->email->subject($this->options['email_subject'] .' '. $data['subject']);
+				$this->email->message($message);
+
+				break;
+
+			case 'news_comment':
+				/* load the models */
+				$this->load->model('news_model', 'news');
+
+				/* run the methods */
+				$row = $this->news->get_news_item($data['news_item']);
+				$name = $this->char->get_character_name($data['author']);
+				$from = $this->user->get_email_address('character', $data['author']);
+				$to = $this->user->get_email_address('character', $row->news_author_character);
+
+				/* set the content */
+				$content = sprintf(
+					lang('email_content_news_comment_added'),
+					"<strong>". $row->news_title ."</strong>",
+					$data['comment']
+				);
+
+				/* create the array passing the data to the email */
+				$email_data = array(
+					'email_subject' => lang('email_subject_news_comment_added'),
+					'email_from' => ucfirst(lang('time_from')) .': '. $name .' - '. $from,
+					'email_content' => ($this->email->mailtype == 'html') ? nl2br($content) : $content
+				);
+
+				/* where should the email be coming from */
+				$em_loc = email_location('main_news_comment', $this->email->mailtype);
+
+				/* parse the message */
+				$message = $this->parser->parse($em_loc, $email_data, TRUE);
+
+				/* set the parameters for sending the email */
+				$this->email->from($from, $name);
+				$this->email->to($to);
+				$this->email->subject($this->options['email_subject'] .' '. $email_data['email_subject']);
+				$this->email->message($message);
+
+				break;
+
+			case 'news_comment_pending':
+				/* load the models */
+				$this->load->model('news_model', 'news');
+
+				/* run the methods */
+				$row = $this->news->get_news_item($data['news_item']);
+				$name = $this->char->get_character_name($data['author']);
+				$from = $this->user->get_email_address('character', $data['author']);
+				$to = implode(',', $this->user->get_emails_with_access('manage/comments'));
+
+				/* set the content */
+				$content = sprintf(
+					lang('email_content_comment_pending'),
+					lang('global_newsitems'),
+					"<strong>". $row->news_title ."</strong>",
+					$data['comment'],
+					site_url('login/index')
+				);
+
+				/* create the array passing the data to the email */
+				$email_data = array(
+					'email_subject' => lang('email_subject_comment_pending'),
+					'email_from' => ucfirst(lang('time_from')) .': '. $name .' - '. $from,
+					'email_content' => ($this->email->mailtype == 'html') ? nl2br($content) : $content
+				);
+
+				/* where should the email be coming from */
+				$em_loc = email_location('comment_pending', $this->email->mailtype);
+
+				/* parse the message */
+				$message = $this->parser->parse($em_loc, $email_data, TRUE);
+
+				/* set the parameters for sending the email */
+				$this->email->from($from, $name);
+				$this->email->to($to);
+				$this->email->subject($this->options['email_subject'] .' '. $email_data['email_subject']);
+				$this->email->message($message);
+
+				break;
+
+			case 'join_user':
+				/* set the content */
+				$content = sprintf(
+					lang('email_content_join_user'),
+					$this->options['sim_name'],
+					$data['email'],
+					$data['password']
+				);
+
+				/* create the array passing the data to the email */
+				$email_data = array(
+					'email_subject' => lang('email_subject_join_user'),
+					'email_from' => ucfirst(lang('time_from')) .': '. $this->options['default_email_name'] .' - '. $this->options['default_email_address'],
+					'email_content' => ($this->email->mailtype == 'html') ? nl2br($content) : $content 
+				);
+
+				/* where should the email be coming from */
+				$em_loc = email_location('main_join_user', $this->email->mailtype);
+
+				/* parse the message */
+				$message = $this->parser->parse($em_loc, $email_data, TRUE);
+
+				/* set the parameters for sending the email */
+				$this->email->from($this->options['default_email_address'], $this->options['default_email_name']);
+				$this->email->to($data['email']);
+				$this->email->subject($this->options['email_subject'] .' '. $email_data['email_subject']);
+				$this->email->message($message);
+
+				break;
+
+			case 'join_gm':
+				/* load the models */
+				$this->load->model('positions_model', 'pos');
+
+				/* create the array passing the data to the email */
+				$email_data = array(
+					'email_subject' => lang('email_subject_join_gm'),
+					'email_from' => ucfirst(lang('time_from')) .': '. $data['name'] .' - '. $data['email'],
+					'email_content' => nl2br(lang('email_content_join_gm'))
+				);
+
+				$email_data['basic_title'] = lang('tabs_user_basic');
+
+				/* build the user data array */
+				$p_data = $this->user->get_user($data['user']);
+
+				$email_data['user'] = array(
+					array(
+						'label' => lang('labels_name'),
+						'data' => $data['name']),
+					array(
+						'label' => lang('labels_email_address'),
+						'data' => $data['email']),
+					array(
+						'label' => lang('labels_dob'),
+						'data' => $p_data->date_of_birth),
+				);
+
+				/* build the character data array */
+				$c_data = $this->char->get_character($data['id']);
+
+				$email_data['character'] = array(
+					array(
+						'label' => ucwords(lang('global_character') .' '. lang('labels_name')),
+						'data' => $this->char->get_character_name($data['id'])),
+					array(
+						'label' => ucfirst(lang('global_position')),
+						'data' => $this->pos->get_position($c_data->position_1, 'pos_name')),
+					array(
+						'label' => ucfirst(lang('ucip_member')),
+						'data' => $this->char->get_character_ucip_member($data['id')),
+					array(
+						'label' => ucfirst(lang('dbid')),
+						'data' => $this->char->get_character_ucip_dbid($data['id')),
+				);
+
+				/* get the sections */
+				$sections = $this->char->get_bio_sections();
+
+				if ($sections->num_rows() > 0)
+				{
+					foreach ($sections->result() as $sec)
+					{ /* drop the section name in */
+						$email_data['sections'][$sec->section_id]['title'] = $sec->section_name;
+
+						/* get the section fields */
+						$fields = $this->char->get_bio_fields($sec->section_id);
+
+						if ($fields->num_rows() > 0)
+						{
+							foreach ($fields->result() as $field)
+							{ /* get the data for each field */
+								$bio_data = $this->char->get_field_data($field->field_id, $data['id']);
+
+								if ($bio_data->num_rows() > 0)
+								{
+									foreach ($bio_data->result() as $item)
+									{ /* put the data into an array */
+										$email_data['sections'][$sec->section_id]['fields'][] = array(
+											'field' => $field->field_label_page,
+											'data' => text_output($item->data_value, '')
+										);
+									}
+								}
+							}
+						}
+					}
+				}
+
+				/* where should the email be coming from */
+				$em_loc = email_location('main_join_gm', $this->email->mailtype);
+
+				/* parse the message */
+				$message = $this->parser->parse($em_loc, $email_data, TRUE);
+
+				/* get the game masters email addresses */
+				$gm = $this->user->get_gm_emails();
+
+				/* set the TO variable */
+				$to = implode(',', $gm);
+
+				/* set the parameters for sending the email */
+				$this->email->from($data['email'], $data['name']);
+				$this->email->to($to);
+				$this->email->subject($this->options['email_subject'] .' '. $email_data['email_subject']);
+				$this->email->message($message);
+
+				break;
+		}
+
+		/* send the email */
+		$email = $this->email->send();
+
+		/* return the email variable */
+		return $email;
+	}
 }
 
 /* End of file main.php */

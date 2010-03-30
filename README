@@ -13,9 +13,17 @@ application you need to perform the following steps.
 
 1. Use the included nova_ucip_join.sql file to add the needed sql table fields to your nova installation.
 
-2. Upload application/controllers/main.php to your application/controllers folder of your Nova install replacing 
+2. Upload application/controllers/characters.php to your application/controllers folder of your Nova install 
+replacing the existing one if you haven't already modified this file. If you already have changes in this file, 
+it's best that you just take the contents of this file and add it into your existing characters.php file.
+
+3. Upload application/controllers/main.php to your application/controllers folder of your Nova install replacing 
 the existing one if you haven't already modified this file. If you already have changes in this file, it's best 
 that you just take the contents of this file and add it into your existing main.php file.
+
+4. Upload application/controllers/personnel.php to your application/controllers folder of your Nova install replacing 
+the existing one if you haven't already modified this file. If you already have changes in this file, it's best 
+that you just take the contents of this file and add it into your existing personnel.php file.
 
 3. Add the following line into your base_lang.php for your associated language(s) after the rest of the includes 
 and before the Global items.
@@ -30,12 +38,23 @@ please contact me via email.)
 7. Upload application/views/_base_override/main/pages/main_join_2.php to your
 application/views/_base_override/main/pages folder of your Nova install.
 
+8. Upload application/views/_base_override/main/pages/personnel_character.php to your
+application/views/_base_override/main/pages folder of your Nova install.
+
+9. Upload application/views/_base_override/admin/pages/characters_bio.php to your
+application/views/_base_override/admin/pages folder of your Nova install.
+
+10. Upload application/models/characters_model.php to your application/models folder of your Nova install.
+
 If you experience any issues please submit a bug report on http://redmine.stelth2000inc.com/projects/nova-mibbit-chat.
 
 You can always get the latest SVN trunk from http://redmine.stelth2000inc.com/projects/nova-mibbit-chat as well.
 
 -------------------------------------
 Changelog - Dates are in Epoch time
+
+1269939186: Handled email notification sent to GMs to show if member is a part of UCIP and their DBID. Had to write
+			a couple db queries in characters_model.php for this. Finished the view alterations.
 
 1269801531: Fully started work on altering the join form for UCIP. Included with this will be the needed email and
 			bio adjustments. All of this is still in development and not ready for release. If you do use it, you

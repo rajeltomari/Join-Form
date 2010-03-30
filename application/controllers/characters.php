@@ -323,6 +323,10 @@ function bio()
 					'id' => 'images',
 					'rows' => 4,
 					'value' => $char->images),
+				'ucip_dbid' => array(
+					'name' => 'ucip_dbid',
+					'id' => 'ucip_dbid',
+					'value' => $char->ucip_dbid),
 			);
 
 			$data['values']['crew_type'] = array(
@@ -414,6 +418,7 @@ function bio()
 			'type_inactive' => ucwords(lang('status_inactive') .' '. lang('global_characters')),
 			'type_npc' => ucwords(lang('status_nonplaying') .' '. lang('global_characters')),
 			'upload' => ucwords(lang('actions_upload') .' '. lang('labels_images') .' '. RARROW),
+			'ucip_dbid' => ucfirst(lang('ucip_dbid')),
 		);
 
 		$js_data['rankloc'] = $this->rank;
