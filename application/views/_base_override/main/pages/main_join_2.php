@@ -80,10 +80,12 @@
 					<?php echo form_radio($inputs['ucip_member_no']) .' '. form_label($label['no'], 'ucip_member_no');?>
 				</p>
 
-				<p>
-					<kbd><?php echo $label['ucip_dbid'];?></kbd>
-					<?php echo form_input($inputs['ucip_dbid']);?>
-				</p>
+				<div id="ucipid">
+					<p>
+						<kbd><?php echo $label['ucip_dbid'];?></kbd>
+						<?php echo form_input($inputs['ucip_dbid']);?>
+					</p>
+				</div>
 			</div>
 		</div>
 

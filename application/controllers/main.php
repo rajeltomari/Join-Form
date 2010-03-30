@@ -355,11 +355,13 @@ class Main extends Main_base {
 				'ucip_member_yes' => array(
 					'name' => 'ucip_member',
 					'id' => 'ucip_member',
+					'class' => 'ucipdbid',
 					'value' => 'yes',
 					'checked' => FALSE),
 				'ucip_member_no' => array(
 					'name' => 'ucip_member',
 					'id' => 'ucip_member',
+					'class' => 'ucipdbid',
 					'value' => 'no',
 					'checked' => TRUE),
 			);
@@ -427,11 +429,13 @@ class Main extends Main_base {
 		);
 
 		$js_loc = js_location('main_join_js', $this->skin, 'main');
+		#$js1_loc = js_location('jquery_cookie_js', $this->skin, 'main');
 
 		/* write the data to the template */
 		$this->template->write('title', $data['header']);
 		$this->template->write_view('content', $view_loc, $data);
 		$this->template->write_view('javascript', $js_loc);
+		#$this->template->write_view('javascript', $js1_loc);
 
 		/* render the template */
 		$this->template->render();
@@ -651,10 +655,10 @@ class Main extends Main_base {
 						'data' => $this->pos->get_position($c_data->position_1, 'pos_name')),
 					array(
 						'label' => ucfirst(lang('ucip_member')),
-						'data' => $this->char->get_character_ucip_member($data['id')),
+						'data' => $this->char->get_character_ucip_member($data['id'])),
 					array(
 						'label' => ucfirst(lang('dbid')),
-						'data' => $this->char->get_character_ucip_dbid($data['id')),
+						'data' => $this->char->get_character_ucip_dbid($data['id'])),
 				);
 
 				/* get the sections */
