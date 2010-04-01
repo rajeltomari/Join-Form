@@ -13,41 +13,55 @@ application you need to perform the following steps.
 
 1. Use the included nova_ucip_join.sql file to add the needed sql table fields to your nova installation.
 
-2. Upload application/controllers/characters.php to your application/controllers folder of your Nova install 
+2. Log into your Nova installation.
+
+3. Goto Site Management > Settings.
+
+4. Click "Manage User-Created Settings »"
+
+5. Click "Add User-Created Setting"
+
+6. Fill in the Label text box and Setting Key text box.
+   Example (the setting key in this example is what is used in main.php):
+     Label: Academy Instructor List
+	 Setting Key: academy_instructor (this is only an example, make this whatever you want, just remember it for
+	 use in main.php)
+
+7. Upload application/controllers/characters.php to your application/controllers folder of your Nova install 
 replacing the existing one if you haven't already modified this file. If you already have changes in this file, 
 it's best that you just take the contents of this file and add it into your existing characters.php file.
 
-3. Upload application/controllers/main.php to your application/controllers folder of your Nova install replacing 
+8. Upload application/controllers/main.php to your application/controllers folder of your Nova install replacing 
 the existing one if you haven't already modified this file. If you already have changes in this file, it's best 
 that you just take the contents of this file and add it into your existing main.php file.
 
-4. Upload application/controllers/personnel.php to your application/controllers folder of your Nova install replacing 
+9. Upload application/controllers/personnel.php to your application/controllers folder of your Nova install replacing 
 the existing one if you haven't already modified this file. If you already have changes in this file, it's best 
 that you just take the contents of this file and add it into your existing personnel.php file.
 
-3. Add the following line into your base_lang.php for your associated language(s) after the rest of the includes 
+10. Add the following line into your app_lang.php for your associated language(s) after the rest of the includes 
 and before the Global items.
 	/* include UCIP Join Language file */
 	include_once APPPATH .'language/'. $language . '/ucip_lang.php';
 
-4. Upload application/language/english/ucip_lang.php to your 
+11. Upload application/language/english/ucip_lang.php to your 
 application/views/language/english folder of your Nova install. Translate this page into other languages and upload
 them to the appropriate language directories. (If you would like your language included into a future release, 
 please contact me via email.)
 
-7. Upload application/views/_base_override/main/pages/main_join_2.php to your
+12. Upload application/views/_base_override/main/pages/main_join_2.php to your
 application/views/_base_override/main/pages folder of your Nova install.
 
-8. Upload application/views/_base_override/main/pages/personnel_character.php to your
+13. Upload application/views/_base_override/main/pages/personnel_character.php to your
 application/views/_base_override/main/pages folder of your Nova install.
 
-9. Upload application/views/_base_override/main/js/main_join_js.php to your
+14. Upload application/views/_base_override/main/js/main_join_js.php to your
 application/views/_base_override/main/js folder of your Nova install.
 
-10. Upload application/views/_base_override/admin/pages/characters_bio.php to your
+15. Upload application/views/_base_override/admin/pages/characters_bio.php to your
 application/views/_base_override/admin/pages folder of your Nova install.
 
-11. Upload application/models/characters_model.php to your application/models folder of your Nova install.
+16. Upload application/models/characters_model.php to your application/models folder of your Nova install.
 
 If you experience any issues please submit a bug report on http://github.com/demonicpagan/UCIP-Join-Form/issues.
 
@@ -55,6 +69,11 @@ You can always get the latest source from http://github.com/demonicpagan/UCIP-Jo
 
 -------------------------------------
 Changelog - Dates are in Epoch time
+
+1270024633: Had the answer to New to UCIP question backwards. If answered "Yes" it showed the DBID box. Should have
+			been the other way around.
+
+1270022374: Forgot to notify UCIP academy of new cadets. Thanks to Wolf (KDFSnet) for reminding me of this.
 
 1269985580: Added jQuery hide/show for the UCIP DBID field on the join form. When yes is selected, that field will
 			show. When no is selected, the field will hide.
