@@ -355,15 +355,13 @@ class Main extends Main_base {
 				'ucip_member_yes' => array(
 					'name' => 'ucip_member',
 					'id' => 'ucip_member',
-					'class' => 'ucipdbid',
 					'value' => 'yes',
-					'checked' => FALSE),
+					'checked' => TRUE),
 				'ucip_member_no' => array(
 					'name' => 'ucip_member',
 					'id' => 'ucip_member',
-					'class' => 'ucipdbid',
 					'value' => 'no',
-					'checked' => TRUE),
+					'checked' => FALSE),
 			);
 
 			/* get the sample post question */
@@ -703,12 +701,19 @@ class Main extends Main_base {
 				/* get the game masters email addresses */
 				$gm = $this->user->get_gm_emails();
 
+				/* Pull whether member has submitted as being a member of UCIP or not */
+				$member = $this->char->get_character_ucip_member($data['id']);
+
 				/* set the TO variable */
 				$to = implode(',', $gm);
 
 				/* set the parameters for sending the email */
 				$this->email->from($data['email'], $data['name']);
 				$this->email->to($to);
+				if ($member === 'Yes')
+				{
+					$this->email->cc($this->settings->get_setting('academy_instructor'));
+				}
 				$this->email->subject($this->options['email_subject'] .' '. $email_data['email_subject']);
 				$this->email->message($message);
 

@@ -43,14 +43,13 @@
 			return false;
 		});
 
-		$('#ucipid').css('display','none');
+		$('#ucipid').hide();
 
-		$('.ucipdbid').click(function(){
-			if ($('input[name=ucip_member]:checked').val() == 'yes' ) {
+		$('input[name=ucip_member]').click(function(){
+			if ($(this).val() == 'yes' )
 				$('#ucipid').slideDown('fast'); //Slide Down Effect
-			} else {
+			else 
 				$('#ucipid').slideUp('fast'); //Slide Up Effect
-			}
 		});
 	});
 </script>
