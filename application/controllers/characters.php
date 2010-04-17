@@ -20,7 +20,7 @@ class Characters extends Characters_base {
 		parent::Characters_base();
 	}
 
-function bio()
+	function bio()
 	{
 		$this->auth->check_access();
 

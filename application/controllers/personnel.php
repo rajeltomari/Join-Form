@@ -20,7 +20,7 @@ class Personnel extends Personnel_base {
 		parent::Personnel_base();
 	}
 
-function character()
+	function character()
 	{
 		/* load the models */
 		$this->load->model('ranks_model', 'ranks');

@@ -26,7 +26,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 --
 
 ALTER TABLE `nova_applications` ADD `ucip_member` TEXT NOT NULL ,
-ADD `ucip_dbid` INT( 5 ) NULL 
+ADD `ucip_dbid` INT( 5 ) NULL;
 
 -- --------------------------------------------------------
 
@@ -34,10 +34,7 @@ ADD `ucip_dbid` INT( 5 ) NULL
 -- Table structure for table `nova_characters`
 --
 
-ALTER TABLE `nova_characters` ADD `ucip_member` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',
-ADD `ucip_dbid` INT( 5 ) NULL 
+ALTER TABLE  `nova_characters` ADD  `ucip_member` ENUM(  'Yes',  'No' ) NOT NULL DEFAULT  'No',
+ADD  `ucip_dbid` INT( 5 ) NULL;
 
 -- --------------------------------------------------------
-
-
-
