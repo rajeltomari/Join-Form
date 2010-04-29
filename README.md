@@ -69,27 +69,42 @@ You can always get the latest source from <http://github.com/demonicpagan/UCIP-J
 
 Changelog - Dates are in Epoch time
 -----------------------------------
-1272516204: Created a more readable README for GitHub.
+1272516204: 
 
-1271470705: Fixed SQL statements, left out a simple ;. Fixed jQuery for the UCIP member, box was displaying under
+*	Created a more readable README for GitHub.
+
+1271470705:
+
+*	Fixed SQL statements, left out a simple ;. Fixed jQuery for the UCIP member, box was displaying under
 wrong selection.
 
-1270024633: Had the answer to New to UCIP question backwards. If answered "Yes" it showed the DBID box. Should have
+1270024633:
+
+*	Had the answer to New to UCIP question backwards. If answered "Yes" it showed the DBID box. Should have
 been the other way around.
 
-1270022374: Forgot to notify UCIP academy of new cadets. Thanks to Wolf (KDFSnet) for reminding me of this.
+1270022374:
 
-1269985580: Added jQuery hide/show for the UCIP DBID field on the join form. When yes is selected, that field will
+*	Forgot to notify UCIP academy of new cadets. Thanks to Wolf (KDFSnet) for reminding me of this.
+
+1269985580:
+
+*	Added jQuery hide/show for the UCIP DBID field on the join form. When yes is selected, that field will
 show. When no is selected, the field will hide.
-
-Updated README with the proper URLS for the project and issue reporting and included where to put the 
+*	Updated README with the proper URLS for the project and issue reporting and included where to put the 
 needed js for latest addition.
 
-1269939186: Handled email notification sent to GMs to show if member is a part of UCIP and their DBID. Had to write
+1269939186:
+
+*	Handled email notification sent to GMs to show if member is a part of UCIP and their DBID. Had to write
 a couple db queries in characters_model.php for this. Finished the view alterations.
 
-1269801531: Fully started work on altering the join form for UCIP. Included with this will be the needed email and
+1269801531:
+
+*	Fully started work on altering the join form for UCIP. Included with this will be the needed email and
 bio adjustments. All of this is still in development and not ready for release. If you do use it, you
 will find things broken and incomplete.
 
-1244254514: Initial submission to SVN repository.
+1244254514:
+
+*	Initial submission to SVN repository.
