@@ -708,13 +708,13 @@ class Main extends Main_base {
 				$to = implode(',', $gm);
 
 				/* set the parameters for sending the email */
-				$this->email->from($data['email'], $data['name']);
+				$this->email->from($this->settings->get_setting('acadapps_from'));
 				$this->email->to($to);
 				if ($member === 'Yes')
 				{
 					$this->email->cc($this->settings->get_setting('academy_instructor'));
 				}
-				$this->email->subject($this->options['email_subject'] .' '. $email_data['email_subject']);
+				$this->email->subject($this->options['sim_name'] .' - '. $this->pos->get_position($c_data->position_1, 'pos_name'));
 				$this->email->message($message);
 
 				break;

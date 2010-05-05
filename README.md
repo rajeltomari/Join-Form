@@ -18,13 +18,16 @@ application you need to perform the following steps.
 
 4. Click "Manage User-Created Settings &raquo;"
 
-5. Click "Add User-Created Setting"
+5. Click "Add User-Created Setting" (You'll need to do this twice, once for each label/setting key pairing)
 
 6. Fill in the Label text box and Setting Key text box.
    Example (the setting key in this example is what is used in main.php):
      Label: Academy Instructor List
 	 Setting Key: academy_instructor (this is only an example, make this whatever you want, just remember it for
 	 use in main.php)
+
+	 Label: Academy/Apps From Address
+	 Setting Key: acadapps_from
 
 7. Upload application/controllers/characters.php to your application/controllers folder of your Nova install 
 replacing the existing one if you haven't already modified this file. If you already have changes in this file, 
@@ -49,19 +52,25 @@ application/views/language/english folder of your Nova install. Translate this p
 them to the appropriate language directories. (If you would like your language included into a future release, 
 please contact me via email.)
 
-12. Upload application/views/_base_override/main/pages/main_join_2.php to your
-application/views/_base_override/main/pages folder of your Nova install.
-
-13. Upload application/views/_base_override/main/pages/personnel_character.php to your
-application/views/_base_override/main/pages folder of your Nova install.
-
-14. Upload application/views/_base_override/main/js/main_join_js.php to your
-application/views/_base_override/main/js folder of your Nova install.
-
-15. Upload application/views/_base_override/admin/pages/characters_bio.php to your
+12. Upload application/views/_base_override/admin/pages/characters_bio.php to your
 application/views/_base_override/admin/pages folder of your Nova install.
 
-16. Upload application/models/characters_model.php to your application/models folder of your Nova install.
+13. Upload application/views/_base_override/emails/html/main_join_gm.php to your
+application/views/_base_override/emails/html folder of your Nova install.
+
+14. Upload application/views/_base_override/emails/text/main_join_gm.php to your
+application/views/_base_override/emails/text folder of your Nova install.
+
+15. Upload application/views/_base_override/main/pages/main_join_2.php to your
+application/views/_base_override/main/pages folder of your Nova install.
+
+16. Upload application/views/_base_override/main/pages/personnel_character.php to your
+application/views/_base_override/main/pages folder of your Nova install.
+
+17. Upload application/views/_base_override/main/js/main_join_js.php to your
+application/views/_base_override/main/js folder of your Nova install.
+
+18. Upload application/models/characters_model.php to your application/models folder of your Nova install.
 
 If you experience any issues please submit a bug report on <http://github.com/demonicpagan/UCIP-Join-Form/issues>.
 
@@ -69,6 +78,17 @@ You can always get the latest source from <http://github.com/demonicpagan/UCIP-J
 
 Changelog - Dates are in Epoch time
 -----------------------------------
+1273041413:
+
+*	As per suggestion from Wolf to follow the filtering specifications of UCIP's database team, the subject line sent out for new
+members has changed to a format of Sim Name - Position.
+
+*	As per suggestion from Wolf to follow another specification of UCIP's database team, the from field has been altered. Please 
+read above as to how to go about setting this as it requires you to create a user-created setting.
+
+*	Updated the html and text versions of main_join_gm.php to be more condensed as well as give from where the email was sent and the 
+ip address of the user's PC that submitted the email.
+
 1272516204: 
 
 *	Created a more readable README for GitHub.
