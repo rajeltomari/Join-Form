@@ -316,11 +316,11 @@ class Characters extends Characters_base {
 				'alt' => $rank->rank_name,
 				'class' => 'image'),
 			'crew_type' => $char->crew_type,
-			'images' => (!empty($char->images)) ? explode(',', $char->images) : '',
 			'ucip_dbid' => array(
 					'name' => 'ucip_dbid',
 					'id' => 'ucip_dbid',
 					'value' => $char->ucip_dbid),
+			'images' => (!empty($char->images)) ? explode(',', $char->images) : '',
 		);
 
 		$data['values']['crew_type'] = array(

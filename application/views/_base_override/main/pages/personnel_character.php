@@ -2,7 +2,7 @@
 
 <?php if ($edit_valid === TRUE || $edit_valid_form === TRUE): ?>
 	<p>
-		<?php echo link_to_if($edit_valid, 'characters/bio', $label['edit'], array('class' => 'edit fontSmall bold'));?>
+		<?php echo link_to_if($edit_valid, 'characters/bio/'. $character['id'], $label['edit'], array('class' => 'edit fontSmall bold'));?>
 		<?php echo link_to_if($edit_valid_form, 'site/bioform', $label['edit_form'], array('class' => 'edit fontSmall bold'));?>
 	</p>
 <?php endif;?>
@@ -14,13 +14,13 @@
 <?php if (isset($character['image']['src'])): ?>
 	<div class="bio_main_image" id="gallery">
 		<div class="fontTiny gray"><?php echo $label['gallery'];?></div><br />
-		<a href="<?php echo base_url() . $character['image']['src'];?>" class="image" rel="gallery">
+		<a href="<?php echo $character['image']['src'];?>" class="image" rel="gallery">
 			<?php echo img($character['image']);?>
 		</a>
 		<div class="hidden">
-			<?php if (count($character['image_array']) > 1): ?>
+			<?php if (count($character['image_array']) > 0): ?>
 				<?php foreach ($character['image_array'] as $image): ?>
-					<a href="<?php echo base_url() . $image['src'];?>" class="image" rel="gallery"><?php echo img($image);?></a>
+					<a href="<?php echo $image['src'];?>" class="image" rel="gallery"><?php echo img($image);?></a>
 				<?php endforeach; ?>
 			<?php endif; ?>
 		</div>
@@ -43,9 +43,9 @@
 			</tr>
 		<?php endif; ?>
 	<?php endforeach; ?>
-	
+
 	<?php echo table_row_spacer(3, 10);?>
-	
+
 	<?php if ($this->auth->is_logged_in() === TRUE && !is_null($character['user'])): ?>
 	<tr>
 		<td colspan="2"></td>
@@ -54,9 +54,9 @@
 		</td>
 	</tr>
 	<?php endif; ?>
-	
+
 	<?php echo table_row_spacer(3, 10);?>
-	
+
 	<?php if ($postcount > 0): ?>
 		<tr>
 			<td colspan="2"></td>
@@ -65,7 +65,7 @@
 			</td>
 		</tr>
 	<?php endif;?>
-	
+
 	<?php if ($logcount > 0): ?>
 		<tr>
 			<td colspan="2"></td>
@@ -74,7 +74,7 @@
 			</td>
 		</tr>
 	<?php endif;?>
-	
+
 	<?php if ($awardcount > 0): ?>
 		<tr>
 			<td colspan="2"></td>
@@ -92,16 +92,16 @@
 				<li><a href="#<?php echo $value['link'];?>"><span><?php echo $value['name'];?></span></a></li>
 			<?php endforeach; ?>
 		</ul>
-		
+
 		<?php foreach ($tabs as $id): ?>
 			<div id="<?php echo $id['link'];?>">
 				<?php if (isset($sections)): ?>
 					<?php foreach ($sections[$id['id']] as $a): ?>
 						<h3><?php echo $a['name'];?></h3>
-						
+
 						<?php if (isset($fields[$a['id']])): ?>
 							<table class="table100 zebra" cellspacing="0" cellpadding="3">
-								
+
 							<?php foreach ($fields[$a['id']] as $b): ?>
 								<tr>
 									<td class="cell-label align_top"><?php echo $b['label'];?></td>
@@ -109,7 +109,7 @@
 									<td><?php echo text_output($b['value'], '');?></td>
 								</tr>
 							<?php endforeach; ?>
-							
+
 						</table><br />
 						<?php endif; ?>
 					<?php endforeach; ?>
@@ -121,10 +121,10 @@
 	<?php if (isset($sections)): ?>
 		<?php foreach ($sections as $a): ?>
 			<h3><?php echo $a['name'];?></h3>
-			
+
 			<?php if (isset($fields[$a['id']])): ?>
 				<table class="table100" cellspacing="0" cellpadding="3">
-					
+
 				<?php foreach ($fields[$a['id']] as $b): ?>
 					<tr>
 						<td class="cell-label align_top"><?php echo $b['label'];?></td>
@@ -132,7 +132,7 @@
 						<td><?php echo $b['value'];?></td>
 					</tr>
 				<?php endforeach; ?>
-				
+
 				</table>
 			<?php endif; ?>
 		<?php endforeach; ?>

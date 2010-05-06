@@ -94,13 +94,13 @@ class Personnel extends Personnel_base {
 				$images = explode(',', $character->images);
 				$images_count = count($images);
 
-				if (strstr($images[0], 'http://'))
+				if (strstr($images[0], 'http://') !== FALSE)
 				{ /* make sure it is not an external image */
 					$src = $images[0];
 				}
 				else
 				{
-					$src = asset_location('images/characters', trim($images[0]));
+					$src = base_url() . asset_location('images/characters', trim($images[0]));
 				}
 
 				/* set the image */
@@ -113,13 +113,13 @@ class Personnel extends Personnel_base {
 
 				for ($i=1; $i < $images_count; $i++)
 				{
-					if (strstr($images[$i], 'http://'))
+					if (strstr($images[$i], 'http://') !== FALSE)
 					{ /* make sure it is not an external image */
 						$src = trim($images[$i]);
 					}
 					else
 					{
-						$src = asset_location('images/characters', trim($images[$i]));
+						$src = base_url() . asset_location('images/characters', trim($images[$i]));
 					}
 
 					/* build the array */
@@ -156,7 +156,7 @@ class Personnel extends Personnel_base {
 				foreach ($sections->result() as $sec)
 				{
 					$fields = $this->char->get_bio_fields($sec->section_id);
-
+					
 					if ($fields->num_rows() > 0)
 					{
 						$j = 1;
