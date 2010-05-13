@@ -193,7 +193,8 @@ class Main extends Main_base {
 						'email' => $email,
 						'name' => $real_name,
 						'id' => $character_id,
-						'user' => $user
+						'user' => $user,
+						'sample_post' => $this->input->post('sample_post')
 					);
 
 					/* execute the email method */
@@ -427,13 +428,11 @@ class Main extends Main_base {
 		);
 
 		$js_loc = js_location('main_join_js', $this->skin, 'main');
-		#$js1_loc = js_location('jquery_cookie_js', $this->skin, 'main');
 
 		/* write the data to the template */
 		$this->template->write('title', $data['header']);
 		$this->template->write_view('content', $view_loc, $data);
 		$this->template->write_view('javascript', $js_loc);
-		#$this->template->write_view('javascript', $js1_loc);
 
 		/* render the template */
 		$this->template->render();
@@ -444,9 +443,6 @@ class Main extends Main_base {
 		/* load the libraries */
 		$this->load->library('email');
 		$this->load->library('parser');
-
-		/* load the language file */
-		$this->lang->load('email');
 
 		/* define the variables */
 		$email = FALSE;
@@ -631,14 +627,14 @@ class Main extends Main_base {
 
 				$email_data['user'] = array(
 					array(
-						'label' => lang('labels_name'),
+						'label' => ucfirst(lang('labels_name')),
 						'data' => $data['name']),
 					array(
-						'label' => lang('labels_email_address'),
+						'label' => ucwords(lang('labels_email_address')),
 						'data' => $data['email']),
 					array(
 						'label' => lang('labels_dob'),
-						'data' => $p_data->date_of_birth),
+						'data' => $p_data->date_of_birth)
 				);
 
 				/* build the character data array */
@@ -691,6 +687,9 @@ class Main extends Main_base {
 						}
 					}
 				}
+
+				$email_data['sample_post_label'] = ucwords(lang('labels_sample_post'));
+				$email_data['sample_post'] = $data['sample_post'];
 
 				/* where should the email be coming from */
 				$em_loc = email_location('main_join_gm', $this->email->mailtype);
