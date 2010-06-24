@@ -312,6 +312,9 @@ class Main extends Main_base {
 				}
 			}
 
+			/* get the join instructions */
+			$data['msg'] = $this->msgs->get_message('join_instructions');
+
 			/* figure out where the view should be coming from */
 			$view_loc = view_location('main_join_2', $this->skin, 'main');
 
