@@ -78,6 +78,10 @@ You can always get the latest source from <http://github.com/demonicpagan/UCIP-J
 
 Changelog - Dates are in Epoch time
 -----------------------------------
+1277345263:
+
+*	Updated controller and view to what was released in 1.0.5.
+
 1273187738:
 
 *	Fixed being able to add images to your character bio. Needed to update the bio function in 
