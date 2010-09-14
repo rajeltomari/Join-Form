@@ -38,7 +38,7 @@ class Characters extends Characters_base {
 		}
 
 		$allowed = FALSE;
-
+		
 		switch ($data['level'])
 		{
 			case 1:
@@ -101,13 +101,18 @@ class Characters extends Characters_base {
 			{
 				$position1_old = $array['character']['position_1_old'];
 				$position2_old = $array['character']['position_2_old'];
+				$rank_old = $array['character']['rank_old'];
 
 				/* get rid of the submit button data and old position refs */
 				unset($array['character']['position_1_old']);
 				unset($array['character']['position_2_old']);
+				unset($array['character']['rank_old']);
 
 				if ($data['level'] == 3)
 				{
+					$crew_type_old = $array['character']['old_crew_type'];
+					unset($array['character']['old_crew_type']);
+
 					if ($array['character']['crew_type'] == 'inactive' && $user['crew_type'] != 'inactive')
 					{ /* set the deactivate date */
 						$array['character']['date_deactivate'] = now();
@@ -117,6 +122,24 @@ class Characters extends Characters_base {
 					{ /* wipe out the deactivate date if they're being reactivated */
 						$array['character']['date_deactivate'] = NULL;
 					}
+				}
+
+				if ($array['character']['rank'] != $rank_old)
+				{
+					$oldR = $this->ranks->get_rank($rank_old, array('rank_order', 'rank_name'));
+					$newR = $this->ranks->get_rank($array['character']['rank'], array('rank_order', 'rank_name'));
+
+					$promotion = array(
+						'prom_char' => $data['id'],
+						'prom_user' => $this->char->get_character($data['id'], 'user'),
+						'prom_date' => now(),
+						'prom_old_order' => $oldR['rank_order'],
+						'prom_old_rank' => $oldR['rank_name'],
+						'prom_new_order' => $newR['rank_order'],
+						'prom_new_rank' => $newR['rank_name'],
+					);
+
+					$prom = $this->char->create_promotion_record($promotion);
 				}
 			}
 
@@ -142,6 +165,57 @@ class Characters extends Characters_base {
 
 				if ($data['level'] == 3)
 				{
+					if ($array['character']['crew_type'] != $crew_type_old)
+					{
+						if ($crew_type_old == 'active' && ($array['character']['crew_type'] == 'inactive' || $array['character']['crew_type'] == 'npc'))
+						{
+							$pos1 = $this->pos->get_position($array['character']['position_1']);
+							$pos2 = $this->pos->get_position($array['character']['position_2']);
+
+							if ($pos1 !== FALSE)
+							{
+								/* build the update array */
+								$position_update['new'] = array('pos_open' => $pos1->pos_open + 1);
+
+								/* update the new position */
+								$posupdate = $this->pos->update_position($array['character']['position_1'], $position_update['new']);
+							}
+
+							if ($pos2 !== FALSE)
+							{
+								/* build the update array */
+								$position_update['new'] = array('pos_open' => $pos2->pos_open + 1);
+
+								/* update the new position */
+								$posupdate = $this->pos->update_position($array['character']['position_2'], $position_update['new']);
+							}
+						}
+
+						if (($crew_type_old == 'inactive' || $crew_type_old == 'npc') && $array['character']['crew_type'] == 'active')
+						{
+							$pos1 = $this->pos->get_position($array['character']['position_1']);
+							$pos2 = $this->pos->get_position($array['character']['position_2']);
+
+							if ($pos1 !== FALSE)
+							{
+								/* build the update array */
+								$position_update['new'] = array('pos_open' => ($pos1->pos_open == 0) ? 0 : ($pos1->pos_open - 1));
+
+								/* update the new position */
+								$posupdate = $this->pos->update_position($array['character']['position_1'], $position_update['new']);
+							}
+
+							if ($pos2 !== FALSE)
+							{
+								/* build the update array */
+								$position_update['new'] = array('pos_open' => ($pos2->pos_open == 0) ? 0 : ($pos2->pos_open - 1));
+
+								/* update the new position */
+								$posupdate = $this->pos->update_position($array['character']['position_2'], $position_update['new']);
+							}
+						}
+					}
+
 					if ($array['character']['crew_type'] == 'active' || $array['character']['crew_type'] == 'pending')
 					{
 						/* update the positions */
@@ -417,6 +491,10 @@ class Characters extends Characters_base {
 				'src' => img_location('image-upload.png', $this->skin, 'admin'),
 				'alt' => lang('actions_upload'),
 				'class' => 'image'),
+			'loader' => array(
+				'src' => img_location('loading-bar.gif', $this->skin, 'admin'),
+				'alt' => lang('actions_loading'),
+				'class' => 'image'),
 		);
 
 		$data['label'] = array(
@@ -424,6 +502,7 @@ class Characters extends Characters_base {
 			'fname' => ucwords(lang('order_first') .' '. lang('labels_name')),
 			'images' => ucfirst(lang('labels_images')),
 			'info' => ucfirst(lang('labels_info')),
+			'loading' => ucfirst(lang('actions_loading')) .'...',
 			'lname' => ucwords(lang('order_last') .' '. lang('labels_name')),
 			'mname' => ucwords(lang('order_middle') .' '. lang('labels_name')),
 			'myuploads' => ucwords(lang('labels_my') .' '. lang('labels_uploads')),

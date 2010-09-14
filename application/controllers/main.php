@@ -258,7 +258,7 @@ class Main extends Main_base {
 						foreach ($fields->result() as $field)
 						{
 							$f_id = $field->field_id; /* field id */
-
+							
 							/* set the page label */
 							$data['join'][$sid]['fields'][$f_id]['field_label'] = $field->field_label_page;
 

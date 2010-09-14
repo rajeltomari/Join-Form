@@ -107,9 +107,12 @@ class Personnel extends Personnel_base {
 				$data['character']['image'] = array(
 					'src' => $src,
 					'alt' => $name,
-					'class' => 'image reflect rheight20 ropacity30',
+					'class' => 'image reflect',
 					'height' => 150
 				);
+
+				// creating the empty array
+				$data['character']['image_array'] = array();
 
 				for ($i=1; $i < $images_count; $i++)
 				{
@@ -121,7 +124,7 @@ class Personnel extends Personnel_base {
 					{
 						$src = base_url() . asset_location('images/characters', trim($images[$i]));
 					}
-
+					
 					/* build the array */
 					$data['character']['image_array'][] = array(
 						'src' => $src,
@@ -156,7 +159,7 @@ class Personnel extends Personnel_base {
 				foreach ($sections->result() as $sec)
 				{
 					$fields = $this->char->get_bio_fields($sec->section_id);
-					
+
 					if ($fields->num_rows() > 0)
 					{
 						$j = 1;
