@@ -78,7 +78,11 @@ You can always get the latest source from <http://github.com/demonicpagan/UCIP-J
 
 Changelog - Dates are in Epoch time
 -----------------------------------
-1284463595
+1294321886:
+
+*	Updated files to work with what was released in version 1.2.2 of Nova
+
+1284463595:
 
 *	Updated controller files and personnel_character.php to work with what was released in 1.1.
 

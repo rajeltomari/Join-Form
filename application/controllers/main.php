@@ -69,110 +69,16 @@ class Main extends Main_base {
 			}
 			else
 			{
-				/* load the additional models */
-				$this->load->model('applications_model', 'apps');
+				// check the ban list
+				$ban['ip'] = $this->sys->get_item('bans', 'ban_ip', $this->input->ip_address());
+				$ban['email'] = $this->sys->get_item('bans', 'ban_email', $email);
 
-				/* grab the user id */
-				$check_user = $this->user->check_email($email);
-
-				if ($check_user === FALSE)
-				{
-					/* build the users data array */
-					$user_array = array(
-						'name' => $real_name,
-						'email' => $email,
-						'password' => $this->auth->hash($password),
-						'instant_message' => $im,
-						'date_of_birth' => $dob,
-						'join_date' => now(),
-						'status' => 'pending',
-						'skin_main' => $this->sys->get_skinsec_default('main'),
-						'skin_admin' => $this->sys->get_skinsec_default('admin'),
-						'skin_wiki' => $this->sys->get_skinsec_default('wiki'),
-						'display_rank' => $this->ranks->get_rank_default(),
-					);
-
-					/* create the user */
-					$users = $this->user->create_user($user_array);
-					$user_id = $this->db->insert_id();
-					$prefs = $this->user->create_user_prefs($user_id);
-					$my_links = $this->sys->update_my_links($user_id);
-				}
-
-				/* set the user id */
-				$user = ($check_user === FALSE) ? $user_id : $check_user;
-
-				/* build the characters data array */
-				$character_array = array(
-					'user' => $user,
-					'first_name' => $first_name,
-					'middle_name' => $middle_name,
-					'last_name' => $last_name,
-					'suffix' => $suffix,
-					'position_1' => $position,
-					'crew_type' => 'pending',
-					'ucip_member' => $ucip_member,
-					'ucip_dbid' => $ucip_dbid
-				);
-
-				/* create the character */
-				$character = $this->char->create_character($character_array);
-				$character_id = $this->db->insert_id();
-
-				/* update the main character if this is their first app */
-				if ($check_user === FALSE)
-				{
-					$main_char = array('main_char' => $character_id);
-					$update_main = $this->user->update_user($user, $main_char);
-				}
-
-				/* optimize the tables */
-				$this->sys->optimize_table('characters');
-				$this->sys->optimize_table('users');
-
-				$name = array($first_name, $middle_name, $last_name, $suffix);
-
-				/* build the apps data array */
-				$app_array = array(
-					'app_email' => $email,
-					'app_user' => $user,
-					'app_user_name' => $real_name,
-					'app_character' => $character_id,
-					'app_character_name' => parse_name($name),
-					'app_position' => $this->pos->get_position($position, 'pos_name'),
-					'app_date' => now(),
-					'ucip_member' => $ucip_member,
-					'ucip_dbid' => $ucip_dbid
-				);
-
-				/* create new application record */
-				$apps = $this->apps->insert_application($app_array);
-
-				foreach ($_POST as $key => $value)
-				{
-					if (is_numeric($key))
-					{
-						/* build the array */
-						$array = array(
-							'data_field' => $key,
-							'data_char' => $character_id,
-							'data_user' => $user,
-							'data_value' => $value,
-							'data_updated' => now()
-						);
-
-						/* insert the data */
-						$this->char->create_character_data($array);
-					}
-				}
-
-				if ($character < 1 && $users < 1)
+				if ($ban['ip'] !== FALSE || $ban['email'] !== FALSE)
 				{
 					$message = sprintf(
-						lang('flash_failure'),
-						ucfirst(lang('actions_join') .' '. lang('actions_request')),
-						lang('actions_submitted'),
-						lang('flash_additional_contact_gm')
+						lang('text_ban_join'),
+						lang('global_sim'),
+						lang('global_game_master')
 					);
 
 					$flash['status'] = 'error';
@@ -180,38 +86,151 @@ class Main extends Main_base {
 				}
 				else
 				{
-					$user_data = array(
-						'email' => $email,
-						'password' => $password,
-						'name' => $real_name
-					);
+					/* load the additional models */
+					$this->load->model('applications_model', 'apps');
 
-					/* execute the email method */
-					$email_user = ($this->options['system_email'] == 'on') ? $this->_email('join_user', $user_data) : FALSE;
+					/* grab the user id */
+					$check_user = $this->user->check_email($email);
 
-					$gm_data = array(
-						'email' => $email,
-						'name' => $real_name,
-						'id' => $character_id,
+					if ($check_user === FALSE)
+					{
+						/* build the users data array */
+						$user_array = array(
+							'name' => $real_name,
+							'email' => $email,
+							'password' => $this->auth->hash($password),
+							'instant_message' => $im,
+							'date_of_birth' => $dob,
+							'join_date' => now(),
+							'status' => 'pending',
+							'skin_main' => $this->sys->get_skinsec_default('main'),
+							'skin_admin' => $this->sys->get_skinsec_default('admin'),
+							'skin_wiki' => $this->sys->get_skinsec_default('wiki'),
+							'display_rank' => $this->ranks->get_rank_default(),
+						);
+
+						/* create the user */
+						$users = $this->user->create_user($user_array);
+						$user_id = $this->db->insert_id();
+						$prefs = $this->user->create_user_prefs($user_id);
+						$my_links = $this->sys->update_my_links($user_id);
+					}
+
+					/* set the user id */
+					$user = ($check_user === FALSE) ? $user_id : $check_user;
+
+					/* build the characters data array */
+					$character_array = array(
 						'user' => $user,
-						'sample_post' => $this->input->post('sample_post')
+						'first_name' => $first_name,
+						'middle_name' => $middle_name,
+						'last_name' => $last_name,
+						'suffix' => $suffix,
+						'position_1' => $position,
+						'crew_type' => 'pending',
+						'ucip_member' => $ucip_member,
+						'ucip_dbid' => $ucip_dbid
 					);
 
-					/* execute the email method */
-					$email_gm = ($this->options['system_email'] == 'on') ? $this->_email('join_gm', $gm_data) : FALSE;
+					/* create the character */
+					$character = $this->char->create_character($character_array);
+					$character_id = $this->db->insert_id();
 
-					$message = sprintf(
-						lang('flash_success'),
-						ucfirst(lang('actions_join') .' '. lang('actions_request')),
-						lang('actions_submitted'),
-						''
+					/* update the main character if this is their first app */
+					if ($check_user === FALSE)
+					{
+						$main_char = array('main_char' => $character_id);
+						$update_main = $this->user->update_user($user, $main_char);
+					}
+
+					/* optimize the tables */
+					$this->sys->optimize_table('characters');
+					$this->sys->optimize_table('users');
+
+					$name = array($first_name, $middle_name, $last_name, $suffix);
+
+					/* build the apps data array */
+					$app_array = array(
+						'app_email' => $email,
+						'app_ip' => $this->input->ip_address(),
+						'app_user' => $user,
+						'app_user_name' => $real_name,
+						'app_character' => $character_id,
+						'app_character_name' => parse_name($name),
+						'app_position' => $this->pos->get_position($position, 'pos_name'),
+						'app_date' => now(),
+						'ucip_member' => $ucip_member,
+						'ucip_dbid' => $ucip_dbid
 					);
 
-					$flash['status'] = 'success';
-					$flash['message'] = text_output($message);
+					/* create new application record */
+					$apps = $this->apps->insert_application($app_array);
+
+					foreach ($_POST as $key => $value)
+					{
+						if (is_numeric($key))
+						{
+							/* build the array */
+							$array = array(
+								'data_field' => $key,
+								'data_char' => $character_id,
+								'data_user' => $user,
+								'data_value' => $value,
+								'data_updated' => now()
+							);
+
+							/* insert the data */
+							$this->char->create_character_data($array);
+						}
+					}
+
+					if ($character < 1 && $users < 1)
+					{
+						$message = sprintf(
+							lang('flash_failure'),
+							ucfirst(lang('actions_join') .' '. lang('actions_request')),
+							lang('actions_submitted'),
+							lang('flash_additional_contact_gm')
+						);
+
+						$flash['status'] = 'error';
+						$flash['message'] = text_output($message);
+					}
+					else
+					{
+						$user_data = array(
+							'email' => $email,
+							'password' => $password,
+							'name' => $real_name
+						);
+
+						/* execute the email method */
+						$email_user = ($this->options['system_email'] == 'on') ? $this->_email('join_user', $user_data) : FALSE;
+
+						$gm_data = array(
+							'email' => $email,
+							'name' => $real_name,
+							'id' => $character_id,
+							'user' => $user,
+							'sample_post' => $this->input->post('sample_post'),
+							'ipaddr' => $this->input->ip_address()
+						);
+
+						/* execute the email method */
+						$email_gm = ($this->options['system_email'] == 'on') ? $this->_email('join_gm', $gm_data) : FALSE;
+
+						$message = sprintf(
+							lang('flash_success'),
+							ucfirst(lang('actions_join') .' '. lang('actions_request')),
+							lang('actions_submitted'),
+							''
+						);
+
+						$flash['status'] = 'success';
+						$flash['message'] = text_output($message);
+					}
 				}
 			}
-
 			/* write everything to the template */
 			$this->template->write_view('flash_message', '_base/main/pages/flash', $flash);
 		}
@@ -425,7 +444,7 @@ class Main extends Main_base {
 		$data['header'] = ucfirst(lang('actions_join'));
 
 		$data['loading'] = array(
-			'src' => img_location('loading-circle.gif', $this->skin, 'admin'),
+			'src' => img_location('loading-circle.gif', $this->skin, 'main'),
 			'alt' => lang('actions_loading'),
 			'class' => 'image'
 		);
@@ -466,35 +485,11 @@ class Main extends Main_base {
 				/* parse the message */
 				$message = $this->parser->parse($em_loc, $email_data, TRUE);
 
-				switch ($data['to'])
-				{ /* figure out who the emails are going to */
-					case 1:
-						/* get the game masters */
-						$gm = $this->user->get_gm_emails();
-
-						/* set the TO variable */
-						$to = implode(',', $gm);
-
-						break;
-
-					case 2:
-						/* get the command staff */
-						$command = $this->user->get_command_staff_emails();
-
-						/* set the TO variable */
-						$to = implode(',', $command);
-
-						break;
-
-					case 3:
-						/* get the webmasters */
-						$webmaster = $this->user->get_webmasters_emails();
-
-						/* set the TO variable */
-						$to = implode(',', $webmaster);
-
-						break;
-				}
+				/* get the game masters */
+				$gm = $this->user->get_gm_emails();
+				
+				/* set the TO variable */
+				$to = implode(',', $gm);
 
 				/* set the parameters for sending the email */
 				$this->email->from($data['email'], $data['name']);
@@ -636,6 +631,9 @@ class Main extends Main_base {
 						'label' => ucwords(lang('labels_email_address')),
 						'data' => $data['email']),
 					array(
+						'label' => ucwords(lang('labels_ipaddr')),
+						'data' => $data['ipaddr']),
+					array(
 						'label' => lang('labels_dob'),
 						'data' => $p_data->date_of_birth)
 				);
@@ -692,7 +690,7 @@ class Main extends Main_base {
 				}
 
 				$email_data['sample_post_label'] = ucwords(lang('labels_sample_post'));
-				$email_data['sample_post'] = $data['sample_post'];
+				$email_data['sample_post'] = ($this->email->mailtype == 'html') ? nl2br($data['sample_post']) : $data['sample_post'];
 
 				/* where should the email be coming from */
 				$em_loc = email_location('main_join_gm', $this->email->mailtype);
