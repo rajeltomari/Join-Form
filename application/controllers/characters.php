@@ -9,17 +9,20 @@ class Characters extends Nova_characters {
 		parent::__construct();
 	}
 
+	/**
+	*** Put your own methods below this...
+	**/
+
+	/******************/
+    /**** JOIN MOD ****/
+    /******************/
 	public function bio($id = false)
 	{
 		Auth::check_access();
 
-		// sanity check
 		$id = (is_numeric($id)) ? $id : false;
-
-		// grab the access level
 		$level = Auth::get_access_level();
 		$data['level'] = $level;
-
 		if ( ! $id and count($this->session->userdata('characters')) > 1)
 		{
 			redirect('characters/select');
@@ -30,9 +33,7 @@ class Characters extends Nova_characters {
 		}
 
 		$data['id'] = $id;
-		
 		$allowed = false;
-
 		switch ($level)
 		{
 			case 1:
@@ -57,22 +58,17 @@ class Characters extends Nova_characters {
 		{
 			redirect('admin/error/1');
 		}
-
-		// load the resources
 		$this->load->model('positions_model', 'pos');
 		$this->load->model('ranks_model', 'ranks');
 		$this->load->model('access_model', 'access');
 		$this->load->helper('directory');
-
 		if (isset($_POST['submit']))
 		{
 			switch ($this->uri->segment(4))
 			{
 				default:
-					// get the user ID and figure out if it should be null or not
 					$user = $this->char->get_character($id, array('user', 'crew_type'));
 					$p = (empty($user['user'])) ? null : $user['user'];
-
 					foreach ($_POST as $key => $value)
 					{
 						if (is_numeric($key))
@@ -91,29 +87,22 @@ class Characters extends Nova_characters {
 							$array['character'][$key] = $value;
 						}
 					}
-
-					// get rid of the submit button
 					unset($array['character']['submit']);
 
-					// get the character record
 					$c = $this->char->get_character($id);
-
 					if (($level == 2 and $c->crew_type == 'npc') or $level == 3)
 					{
 						$position1_old = $array['character']['position_1_old'];
 						$position2_old = $array['character']['position_2_old'];
 						$rank_old = $array['character']['rank_old'];
 
-						// get rid of the submit button data and old position refs
 						unset($array['character']['position_1_old']);
 						unset($array['character']['position_2_old']);
 						unset($array['character']['rank_old']);
-
 						if ($array['character']['rank'] != $rank_old)
 						{
 							$oldR = $this->ranks->get_rank($rank_old, array('rank_order', 'rank_name'));
 							$newR = $this->ranks->get_rank($array['character']['rank'], array('rank_order', 'rank_name'));
-
 							$promotion = array(
 								'prom_char' => $data['id'],
 								'prom_user' => $this->char->get_character($data['id'], 'user'),
@@ -123,7 +112,6 @@ class Characters extends Nova_characters {
 								'prom_new_order' => ($newR['rank_order'] === null) ? 0 : $newR['rank_order'],
 								'prom_new_rank' => ($newR['rank_name'] === null) ? '' : $newR['rank_name'],
 							);
-
 							$prom = $this->char->create_promotion_record($promotion);
 						}
 
@@ -148,9 +136,7 @@ class Characters extends Nova_characters {
 						}
 					}
 
-					// update the characters table
 					$update = $this->char->update_character($data['id'], $array['character']);
-
 					foreach ($array['fields'] as $k => $v)
 					{
 						$update += $this->char->update_character_data($k, $data['id'], $v);
@@ -165,18 +151,14 @@ class Characters extends Nova_characters {
 					$flash['status'] = ($update > 0) ? 'success' : 'error';
 					$flash['message'] = text_output($message);
 				break;
-
 				case 'activate':
 					if ($level == 3)
 					{
-						// get the variables we'll be using
 						$user = (isset($_POST['user'])) ? $_POST['user'] : false;
 						$activate = (isset($_POST['activate_user'])) ? (bool) $this->input->post('activate_user') : false;
 						$primary = (isset($_POST['primary'])) ? (bool) $this->input->post('primary', true) : false;
-
-						// get the character
 						$c = $this->char->get_character($id);
-
+						
 						if ($activate)
 						{
 							$user_update_data['status'] = 'active';
@@ -184,23 +166,20 @@ class Characters extends Nova_characters {
 							$user_update_data['access_role'] = Access_Model::STANDARD;
 							$user_update_data['last_update'] = now();
 						}
-
+						
 						if ($primary)
 						{
 							$user_update_data['main_char'] = $id;
 							$user_update_data['last_update'] = now();
 						}
-
-						// build the data for updating the character
+						
 						$character_update_data = array(
 							'user' => $user,
 							'crew_type' => 'active',
 							'date_deactivate' => null,
 						);
-
-						// update the position listings
+						
 						$this->pos->update_open_slots($c->position_1, 'add_crew');
-
 						if ($c->position_2 > 0 and $c->position_2 !== null)
 						{
 							$this->pos->update_open_slots($c->position_2, 'add_crew');
@@ -208,13 +187,10 @@ class Characters extends Nova_characters {
 
 						if (isset($user_update_data))
 						{
-							// update the user
 							$update_user = $this->user->update_user($user, $user_update_data);
 						}
 
-						// update the character
 						$update_char = $this->char->update_character($id, $character_update_data);
-
 						$message = sprintf(
 							($update_char > 0) ? lang('flash_success') : lang('flash_failure'),
 							ucfirst(lang('global_character')),
@@ -225,17 +201,13 @@ class Characters extends Nova_characters {
 						$flash['message'] = text_output($message);
 					}
 				break;
-
 				case 'deactivate':
 					if ($level == 3)
 					{
-						// get the variables we'll be using
 						$maincharacter = (isset($_POST['main_character'])) ? $_POST['main_character'] : false;
 						$deactivate = (isset($_POST['deactivate_user'])) ? (bool) $this->input->post('deactivate_user') : false;
 
-						// get the character
 						$c = $this->char->get_character($id);
-
 						if ($deactivate)
 						{
 							$user_update_data['status'] = 'inactive';
@@ -250,15 +222,12 @@ class Characters extends Nova_characters {
 							$user_update_data['last_update'] = now();
 						}
 
-						// build the data for updating the character
 						$character_update_data = array(
 							'crew_type' => 'inactive',
 							'date_deactivate' => now(),
 						);
 
-						// update the position listings
 						$this->pos->update_open_slots($c->position_1, 'remove_crew');
-
 						if ($c->position_2 > 0 and $c->position_2 !== null)
 						{
 							$this->pos->update_open_slots($c->position_2, 'remove_crew');
@@ -270,9 +239,7 @@ class Characters extends Nova_characters {
 							$update_user = $this->user->update_user($c->user, $user_update_data);
 						}
 
-						// update the character
 						$update_char = $this->char->update_character($id, $character_update_data);
-
 						$message = sprintf(
 							($update_char > 0) ? lang('flash_success') : lang('flash_failure'),
 							ucfirst(lang('global_character')),
@@ -283,18 +250,14 @@ class Characters extends Nova_characters {
 						$flash['message'] = text_output($message);
 					}
 				break;
-
 				case 'makenpc':
 					if ($level == 3)
 					{
-						// get the variables we'll be using
 						$maincharacter = (isset($_POST['main_character'])) ? $_POST['main_character'] : false;
 						$deactivate = (isset($_POST['deactivate_user'])) ? (bool) $this->input->post('deactivate_user') : false;
 						$assoc = (isset($_POST['remove_user'])) ? (bool) $this->input->post('remove_user') : false;
 
-						// get the character
 						$c = $this->char->get_character($id);
-
 						if ($deactivate)
 						{
 							$user_update_data['status'] = 'inactive';
@@ -315,12 +278,8 @@ class Characters extends Nova_characters {
 							$user_update_data['main_char'] = null;
 						}
 
-						// build the data for updating the character
 						$character_update_data['crew_type'] = 'npc';
-
-						// update the position listings
 						$this->pos->update_open_slots($c->position_1, 'remove_crew');
-
 						if ($c->position_2 > 0 and $c->position_2 !== null)
 						{
 							$this->pos->update_open_slots($c->position_2, 'remove_crew');
@@ -332,9 +291,7 @@ class Characters extends Nova_characters {
 							$update_user = $this->user->update_user($c->user, $user_update_data);
 						}
 
-						// update the character
 						$update_char = $this->char->update_character($id, $character_update_data);
-
 						$message = sprintf(
 							($update_char > 0) ? lang('flash_success') : lang('flash_failure'),
 							ucfirst(lang('global_character')),
@@ -345,20 +302,14 @@ class Characters extends Nova_characters {
 						$flash['message'] = text_output($message);
 					}
 				break;
-
 				case 'makeplaying':
 					if ($level == 3)
 					{
-						// get the variables we'll be using
 						$maincharacter = (isset($_POST['main_character'])) ? $_POST['main_character'] : false;
 						$user = (isset($_POST['user'])) ? $this->input->post('user') : false;
 
-						// get the character
 						$c = $this->char->get_character($id);
-
-						// get the user we're going to
 						$u = $this->user->get_user($user);
-
 						if ($u->status == 'inactive')
 						{
 							$user_update_data['status'] = 'active';
@@ -373,13 +324,9 @@ class Characters extends Nova_characters {
 							$user_update_data['last_update'] = now();
 						}
 
-						// build the data for updating the character
 						$character_update_data['crew_type'] = 'active';
 						$character_update_data['user'] = $user;
-
-						// update the position listings
 						$this->pos->update_open_slots($c->position_1, 'add_crew');
-
 						if ($c->position_2 > 0 and $c->position_2 !== null)
 						{
 							$this->pos->update_open_slots($c->position_2, 'add_crew');
@@ -387,13 +334,10 @@ class Characters extends Nova_characters {
 
 						if (isset($user_update_data))
 						{
-							// update the user
 							$update_user = $this->user->update_user($user, $user_update_data);
 						}
 
-						// update the character
 						$update_char = $this->char->update_character($id, $character_update_data);
-
 						$message = sprintf(
 							($update_char > 0) ? lang('flash_success') : lang('flash_failure'),
 							ucfirst(lang('global_character')),
@@ -405,41 +349,25 @@ class Characters extends Nova_characters {
 					}
 				break;
 			}
-
-			// set the flash message
 			$this->_regions['flash_message'] = Location::view('flash', $this->skin, 'admin', $flash);
 		}
-
-		// grab the character info
 		$char = $this->char->get_character($id);
-
-		// grab the join fields
 		$sections = $this->char->get_bio_sections();
-
 		if ($sections->num_rows() > 0)
 		{
 			foreach ($sections->result() as $sec)
 			{
 				$sid = $sec->section_id;
-
-				// set the section name
 				$data['join'][$sid]['name'] = $sec->section_name;
-
-				// grab the fields for the given section
 				$fields = $this->char->get_bio_fields($sec->section_id);
-
 				if ($fields->num_rows() > 0)
 				{
 					foreach ($fields->result() as $field)
 					{
 						$f_id = $field->field_id;
-
-						// set the page label
 						$data['join'][$sid]['fields'][$f_id]['field_label'] = $field->field_label_page;
-
 						$info = $this->char->get_field_data($field->field_id, $data['id']);
 						$row = ($info->num_rows() > 0) ? $info->row() : false;
-
 						switch ($field->field_type)
 						{
 							case 'text':
@@ -449,10 +377,8 @@ class Characters extends Nova_characters {
 									'class' => $field->field_class,
 									'value' => ($row !== false) ? $row->data_value : '',
 								);
-
 								$data['join'][$sid]['fields'][$f_id]['input'] = form_input($input);
 							break;
-
 							case 'textarea':
 								$input = array(
 									'name' => $field->field_id,
@@ -461,18 +387,14 @@ class Characters extends Nova_characters {
 									'value' => ($row !== false) ? $row->data_value : '',
 									'rows' => $field->field_rows
 								);
-
 								$data['join'][$sid]['fields'][$f_id]['input'] = form_textarea($input);
 							break;
-
 							case 'select':
 								$value = false;
 								$values = false;
 								$input = false;
-
 								$values = $this->char->get_bio_values($field->field_id);
 								$data_val = ($row !== false) ? $row->data_value : '';
-
 								if ($values->num_rows() > 0)
 								{
 									foreach ($values->result() as $value)
@@ -480,7 +402,6 @@ class Characters extends Nova_characters {
 										$input[$value->value_field_value] = $value->value_content;
 									}
 								}
-
 								$data['join'][$sid]['fields'][$f_id]['input'] = form_dropdown($field->field_id, $input, $data_val);
 							break;
 						}
@@ -493,8 +414,6 @@ class Characters extends Nova_characters {
 		$pos2 = $this->pos->get_position($char->position_2);
 		$rank = $this->ranks->get_rank($char->rank);
 		$rankcat = $this->ranks->get_rankcat($this->rank);
-
-		// inputs
 		$data['inputs'] = array(
 			'first_name' => array(
 				'name' => 'first_name',
@@ -526,10 +445,6 @@ class Characters extends Nova_characters {
 				'alt' => ($rank !== false) ? $rank->rank_name : '',
 				'class' => 'image'),
 			'crew_type' => $char->crew_type,
-			'ucip_dbid' => array(
-					'name' => 'ucip_dbid',
-					'id' => 'ucip_dbid',
-					'value' => $char->ucip_dbid),
 			'images' => ( ! empty($char->images)) ? explode(',', $char->images) : '',
 		);
 
@@ -541,9 +456,7 @@ class Characters extends Nova_characters {
 		);
 
 		$data['directory'] = array();
-
 		$dir = $this->sys->get_uploaded_images('bio');
-		
 		if ($dir->num_rows() > 0)
 		{
 			foreach ($dir->result() as $d)
@@ -574,13 +487,11 @@ class Characters extends Nova_characters {
 		}
 
 		$data['header'] = ucwords(lang('actions_edit') .' '. lang('labels_bio')) .' - '. $this->char->get_character_name($data['id']);
-			
 		$data['image_instructions'] = sprintf(
 			lang('text_image_select'),
 			lang('labels_bio')
 		);
 
-		// submit button
 		$data['button'] = array(
 			'submit' => array(
 				'type' => 'submit',
@@ -670,7 +581,6 @@ class Characters extends Nova_characters {
 			'type_inactive' => ucwords(lang('status_inactive') .' '. lang('global_characters')),
 			'type_npc' => ucwords(lang('status_nonplaying') .' '. lang('global_characters')),
 			'upload' => ucwords(lang('actions_upload') .' '. lang('labels_images') .' '. RARROW),
-			'ucip_dbid' => ucfirst(lang('ucip_dbid')),
 			'change' => ucwords(lang('actions_change').' '.lang('global_character').' '.lang('labels_status')),
 			'available_images' => ucwords(lang('labels_available').' '.lang('labels_images')),
 			'character_images' => ucwords(lang('global_character').' '.lang('labels_images')),
@@ -684,7 +594,9 @@ class Characters extends Nova_characters {
 		$this->_regions['title'].= $data['header'];
 		
 		Template::assign($this->_regions);
-
 		Template::render();
 	}
+	/******************/
+    /**** JOIN MOD ****/
+    /******************/
 }

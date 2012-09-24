@@ -77,17 +77,10 @@
 				</p>
 
 				<p>
-					<kbd><?php echo $label['ucip_member'];?></kbd>
-					<?php echo form_radio($inputs['ucip_member_yes']) .' '. form_label($label['yes'], 'ucip_member_yes');?>
-					<?php echo form_radio($inputs['ucip_member_no']) .' '. form_label($label['no'], 'ucip_member_no');?>
+					<kbd><?php echo $label['new_member'];?></kbd>
+					<?php echo form_radio($inputs['new_member_yes']) .' '. form_label($label['yes'], 'new_member_yes');?>
+					<?php echo form_radio($inputs['new_member_no']) .' '. form_label($label['no'], 'new_member_no');?>
 				</p>
-
-				<div id="ucipid">
-					<p>
-						<kbd><?php echo $label['ucip_dbid'];?></kbd>
-						<?php echo form_input($inputs['ucip_dbid']);?>
-					</p>
-				</div>
 			</div>
 		</div>
 

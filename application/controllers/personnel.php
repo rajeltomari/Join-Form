@@ -9,6 +9,13 @@ class Personnel extends Nova_personnel {
 		parent::__construct();
 	}
 
+	/**
+	*** Put your own methods below this...
+	**/
+
+	/******************/
+    /**** JOIN MOD ****/
+    /******************/
 	public function character($id = false)
 	{
 		// load the models
@@ -20,10 +27,7 @@ class Personnel extends Nova_personnel {
 		$this->load->model('awards_model', 'awards');
 		$this->load->helper('utility');
 
-		// sanity check
 		$id = (is_numeric($id)) ? $id : false;
-
-		// grab the character info
 		$character = $this->char->get_character($id);
 
 		$data['postcount'] = 0;
@@ -37,10 +41,7 @@ class Personnel extends Nova_personnel {
 			$data['logcount'] = $this->logs->count_character_logs($id);
 			$data['newscount'] = $this->news->count_character_news($id);
 			$data['awardcount'] = $this->awards->count_character_awards($id);
-
 			$data['last_post'] = mdate($this->options['date_format'], gmt_to_local($character->last_post, $this->timezone, $this->dst));
-
-			// set the name items into an array
 			$name_array = array(
 				'first_name' => $character->first_name,
 				'middle_name' => $character->middle_name,
@@ -48,14 +49,9 @@ class Personnel extends Nova_personnel {
 				'suffix' => $character->suffix
 			);
 
-			// parse the name out
 			$name = parse_name($name_array);
 			$abbr_name = parse_name(array('first_name' => $character->first_name, 'last_name' => $character->last_name));
-
-			// get the rank name
 			$rank = $this->ranks->get_rank($character->rank, 'rank_name');
-
-			// set the character info
 			$data['character_info'] = array(
 				array(
 					'label' => ucfirst(lang('labels_name')),
@@ -69,50 +65,37 @@ class Personnel extends Nova_personnel {
 				array(
 					'label' => ucfirst(lang('global_rank')),
 					'value' => $rank),
-				array(
-					'label' => ucfirst(lang('dbid')),
-					'value' => $character->ucip_dbid),
 			);
 
-			// set the data used by the view
 			$data['character']['id'] = $id;
 			$data['character']['name'] = $name;
 			$data['character']['rank'] = $character->rank;
 			$data['character']['position_1'] = $character->position_1;
 			$data['character']['position_2'] = $character->position_2;
 			$data['character']['user'] = $character->user;
-			$data['character']['ucip_dbid'] = $character->ucip_dbid;
 
 			if ($character->images > '')
 			{
-				// get the images
 				$images = explode(',', $character->images);
 				$images_count = count($images);
-
 				$src = (strstr($images[0], 'http://') !== false)
 					? $images[0]
 					: base_url().Location::asset('images/characters', trim($images[0]));
 
-				// set the image
 				$data['character']['image'] = array(
 					'src' => $src,
 					'alt' => $name,
-					//'class' => 'image reflect',
 					'class' => 'image',
-					//'height' => 150
 					'width' => 200
 				);
 
-				// creating the empty array
 				$data['character']['image_array'] = array();
-
 				for ($i=1; $i < $images_count; $i++)
 				{
 					$src = (strstr($images[$i], 'http://') !== false)
 						? trim($images[$i])
-						: base_url().Location::asset('images/characters', trim($images[$i]));
-
-					// build the array
+						: base_url().Location::asset('images/characters', trim($images[$i])
+					);
 					$data['character']['image_array'][] = array(
 						'src' => $src,
 						'alt' => $name,
@@ -122,7 +105,6 @@ class Personnel extends Nova_personnel {
 			}
 			else
 			{
-				// set the image
 				$data['character']['noavatar'] = array(
 					'src' => Location::img('no-avatar.png', $this->skin, 'main'),
 					'alt' => '',
@@ -131,10 +113,7 @@ class Personnel extends Nova_personnel {
 				);
 			}
 
-			// get the bio tabs
 			$tabs = $this->char->get_bio_tabs();
-
-			// get the bio sections
 			$sections = $this->char->get_bio_sections();
 
 			if ($tabs->num_rows() > 0)
@@ -201,11 +180,9 @@ class Personnel extends Nova_personnel {
 		}
 		else
 		{
-			// set the header
 			$data['header'] = sprintf(lang('error_title_invalid_char'), ucfirst(lang('global_character')));
 			$data['msg_error'] = sprintf(lang_output('error_msg_invalid_char'), lang('global_character'));
 
-			// set the title
 			$this->_regions['title'].= lang('error_pagetitle');
 		}
 
@@ -269,7 +246,9 @@ class Personnel extends Nova_personnel {
 		$this->_regions['javascript'] = Location::js('personnel_character_js', $this->skin, 'main');
 
 		Template::assign($this->_regions);
-
 		Template::render();
 	}
+	/******************/
+    /**** JOIN MOD ****/
+    /******************/
 }

@@ -37,14 +37,7 @@
 		<?php if (!empty($a['value'])): ?>
 			<tr>
 				<td class="cell-label"><?php echo $a['label'];?></td>
-				<td class="cell-spacer"></td>
-				<td>
-					<?php if ($a['label'] === 'UCIP DBID'): ?>
-					<a href="http://database.ucip.org/bio/view_individual.cgi?ID=<?php echo $a['value'];?>"><?php echo $a['value'];?>
-					<?php else: ?>
-					<?php echo $a['value'];?>
-					<?php endif; ?>
-				</td>
+				<td class="cell-spacer"><?php echo $a['value'];?></td>
 			</tr>
 		<?php endif; ?>
 	<?php endforeach; ?>

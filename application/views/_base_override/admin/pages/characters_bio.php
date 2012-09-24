@@ -60,11 +60,6 @@
 					<?php echo form_input($inputs['suffix']);?>
 				</p><br />
 
-				<p>
-					<kbd><?php echo $label['ucip_dbid'];?></kbd>
-					<?php echo form_input($inputs['ucip_dbid']);?>
-				</p><br />
-
 				<?php if ($level >= 2): ?>
 					<?php if (($level == 2 and $inputs['crew_type'] == 'npc') or $level == 3): ?>
 						<p>

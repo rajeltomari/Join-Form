@@ -9,6 +9,13 @@ class Main extends Nova_main {
 		parent::__construct();
 	}
 
+	/**
+	*** Put your own methods below this...
+	**/
+
+	/******************/
+    /**** JOIN MOD ****/
+    /******************/
 	public function join()
 	{
 		$this->load->model('positions_model', 'pos');
@@ -26,21 +33,18 @@ class Main extends Nova_main {
 
 		if ($submit !== false)
 		{
-			// user POST variables
 			$email = $this->input->post('email', true);
 			$real_name = $this->input->post('name',true);
 			$im = $this->input->post('instant_message', true);
 			$dob = $this->input->post('date_of_birth', true);
 			$password = $this->input->post('password', true);
 
-			// character POST variables
 			$first_name = $this->input->post('first_name',true);
 			$middle_name = $this->input->post('middle_name', true);
 			$last_name = $this->input->post('last_name', true);
 			$suffix = $this->input->post('suffix',true);
 			$position = $this->input->post('position_1',true);
-			$ucip_member = $this->input->post('ucip_member',true);
-			$ucip_dbid = $this->input->post('ucip_dbid',true);
+			$new_member = $this->input->post('new_member',true);
 
 			if ($position == 0 or $first_name == '' or empty($password) or empty($email))
 			{
@@ -56,7 +60,6 @@ class Main extends Nova_main {
 			}
 			else
 			{
-				// check the ban list
 				$ban['ip'] = $this->sys->get_item('bans', 'ban_ip', $this->input->ip_address());
 				$ban['email'] = $this->sys->get_item('bans', 'ban_email', $email);
 
@@ -73,12 +76,8 @@ class Main extends Nova_main {
 				}
 				else
 				{
-					// load the additional models
 					$this->load->model('applications_model', 'apps');
-
-					// grab the user id
 					$check_user = $this->user->check_email($email);
-
 					if ($check_user === false)
 					{
 						// build the users data array
@@ -96,17 +95,13 @@ class Main extends Nova_main {
 							'display_rank' => $this->ranks->get_rank_default(),
 						);
 
-						// create the user
 						$users = $this->user->create_user($user_array);
 						$user_id = $this->db->insert_id();
 						$prefs = $this->user->create_user_prefs($user_id);
 						$my_links = $this->sys->update_my_links($user_id);
 					}
 
-					// set the user id
 					$user = ($check_user === false) ? $user_id : $check_user;
-
-					// build the characters data array
 					$character_array = array(
 						'user' => $user,
 						'first_name' => $first_name,
@@ -115,28 +110,20 @@ class Main extends Nova_main {
 						'suffix' => $suffix,
 						'position_1' => $position,
 						'crew_type' => 'pending',
-						'ucip_member' => $ucip_member,
-						'ucip_dbid' => $ucip_dbid
+						'new_member' => $new_member,
 					);
 
-					// create the character
 					$character = $this->char->create_character($character_array);
 					$character_id = $this->db->insert_id();
-
-					// update the main character if this is their first app
 					if ($check_user === false)
 					{
 						$main_char = array('main_char' => $character_id);
 						$update_main = $this->user->update_user($user, $main_char);
 					}
 
-					// optimize the tables
 					$this->sys->optimize_table('characters');
 					$this->sys->optimize_table('users');
-
 					$name = array($first_name, $middle_name, $last_name, $suffix);
-
-					// build the apps data array
 					$app_array = array(
 						'app_email' => $email,
 						'app_ip' => $this->input->ip_address(),
@@ -146,13 +133,10 @@ class Main extends Nova_main {
 						'app_character_name' => parse_name($name),
 						'app_position' => $this->pos->get_position($position, 'pos_name'),
 						'app_date' => now(),
-						'ucip_member' => $ucip_member,
-						'ucip_dbid' => $ucip_dbid
+						'new_member' => $new_member,
 					);
 
-					// create new application record
 					$apps = $this->apps->insert_application($app_array);
-
 					foreach ($_POST as $key => $value)
 					{
 						if (is_numeric($key))
@@ -190,10 +174,7 @@ class Main extends Nova_main {
 							'password' => $password,
 							'name' => $real_name
 						);
-
-						// execute the email method
 						$email_user = ($this->options['system_email'] == 'on') ? $this->_email('join_user', $user_data) : false;
-
 						$gm_data = array(
 							'email' => $email,
 							'name' => $real_name,
@@ -203,9 +184,7 @@ class Main extends Nova_main {
 							'ipaddr' => $this->input->ip_address()
 						);
 
-						// execute the email method
 						$email_gm = ($this->options['system_email'] == 'on') ? $this->_email('join_gm', $gm_data) : false;
-
 						$message = sprintf(
 							lang('flash_success'),
 							ucfirst(lang('actions_join') .' '. lang('actions_request')),
@@ -242,30 +221,20 @@ class Main extends Nova_main {
 		}
 		else
 		{
-			// grab the join fields
 			$sections = $this->char->get_bio_sections();
-
 			if ($sections->num_rows() > 0)
 			{
 				foreach ($sections->result() as $sec)
 				{
 					$sid = $sec->section_id;
-					
-					// set the section name
 					$data['join'][$sid]['name'] = $sec->section_name;
-
-					// grab the fields for the given section
 					$fields = $this->char->get_bio_fields($sec->section_id);
-
 					if ($fields->num_rows() > 0)
 					{
 						foreach ($fields->result() as $field)
 						{
 							$f_id = $field->field_id;
-
-							// set the page label
 							$data['join'][$sid]['fields'][$f_id]['field_label'] = $field->field_label_page;
-
 							switch ($field->field_type)
 							{
 								case 'text':
@@ -275,10 +244,8 @@ class Main extends Nova_main {
 										'class' => $field->field_class,
 										'value' => $field->field_value
 									);
-
 									$data['join'][$sid]['fields'][$f_id]['input'] = form_input($input);
 								break;
-
 								case 'textarea':
 									$input = array(
 										'name' => $field->field_id,
@@ -287,17 +254,13 @@ class Main extends Nova_main {
 										'value' => $field->field_value,
 										'rows' => $field->field_rows
 									);
-
 									$data['join'][$sid]['fields'][$f_id]['input'] = form_textarea($input);
 								break;
-
 								case 'select':
 									$value = false;
 									$values = false;
 									$input = false;
-
 									$values = $this->char->get_bio_values($field->field_id);
-
 									if ($values->num_rows() > 0)
 									{
 										foreach ($values->result() as $value)
@@ -305,7 +268,6 @@ class Main extends Nova_main {
 											$input[$value->value_field_value] = $value->value_content;
 										}
 									}
-
 									$data['join'][$sid]['fields'][$f_id]['input'] = form_dropdown($field->field_id, $input);
 								break;
 							}
@@ -314,13 +276,8 @@ class Main extends Nova_main {
 				}
 			}
 
-			// get the join instructions
 			$data['msg'] = $this->msgs->get_message('join_instructions');
-
-			// figure out where the view should be coming from
 			$view_loc = 'main_join_2';
-
-			// inputs
 			$data['inputs'] = array(
 				'name' => array(
 					'name' => 'name',
@@ -355,24 +312,19 @@ class Main extends Nova_main {
 					'name' => 'sample_post',
 					'id' => 'sample_post',
 					'rows' => 30),
-				'ucip_dbid' => array(
-					'name' => 'ucip_dbid',
-					'id' => 'ucip_dbid'),
-				'ucip_member_yes' => array(
-					'name' => 'ucip_member',
-					'id' => 'ucip_member',
+				'new_member_yes' => array(
+					'name' => 'new_member',
+					'id' => 'new_member',
 					'value' => 'yes',
 					'checked' => true),
-				'ucip_member_no' => array(
-					'name' => 'ucip_member',
-					'id' => 'ucip_member',
+				'new_member_no' => array(
+					'name' => 'new_member',
+					'id' => 'new_member',
 					'value' => 'no',
 					'checked' => false),
 			);
 
-			// get the sample post question
 			$data['sample_post_msg'] = $this->msgs->get_message('join_post');
-
 			$data['label'] = array(
 				'user_info' => ucwords(lang('global_user') .' '. lang('labels_information')),
 				'name' => ucwords(lang('labels_name')),
@@ -391,16 +343,12 @@ class Main extends Nova_main {
 				'samplepost' => ucwords(lang('labels_sample_post')),
 				'character' => ucfirst(lang('global_character')),
 				'character_info' => ucwords(lang('global_character') .' '. lang('labels_info')),
-				'ucip_member' => lang('ucip_member'),
-				'ucip_member_yes' => lang('ucip_member_yes'),
-				'ucip_member_no' => lang('ucip_member_no'),
-				'ucip_dbid' => lang('ucip_dbid'),
-				'yes' => lang('labels_yes'),
-				'no' => lang('labels_no'),
+				'new_member' => lang('new_member'),
+				'new_member_yes' => lang('new_member_yes'),
+				'new_member_no' => lang('new_member_no'),
 			);
 		}
 
-		// submit button
 		$data['button'] = array(
 			'submit' => array(
 				'type' => 'submit',
@@ -425,7 +373,6 @@ class Main extends Nova_main {
 		);
 
 		$data['header'] = ucfirst(lang('actions_join'));
-
 		$data['loading'] = array(
 			'src' => Location::img('loading-circle.gif', $this->skin, 'main'),
 			'alt' => lang('actions_loading'),
@@ -437,7 +384,9 @@ class Main extends Nova_main {
 		$this->_regions['title'].= $data['header'];
 
 		Template::assign($this->_regions);
-
 		Template::render();
 	}
+	/******************/
+    /**** JOIN MOD ****/
+    /******************/
 }

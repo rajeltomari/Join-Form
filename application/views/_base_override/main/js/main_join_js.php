@@ -42,14 +42,5 @@
 
 			return false;
 		});
-
-		$('#ucipid').hide();
-
-		$('input[name=ucip_member]').click(function(){
-			if ($(this).val() == 'no' )
-				$('#ucipid').slideDown('fast'); //Slide Down Effect
-			else 
-				$('#ucipid').slideUp('fast'); //Slide Up Effect
-		});
 	});
 </script>
