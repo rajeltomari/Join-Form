@@ -13,27 +13,21 @@ The following application will alter your join form identify new members to your
 
 2. Open [your domain]/application/controllers/characters.php controller, and copy the entire function segment into the one in your domain. For your convenience, the function begins and ends with
 
-```
-	/******************/
-	/**** JOIN MOD ****/
-	/******************/
-```
+    `/******************/`<br />
+	`/**** JOIN MOD ****/`<br />
+	`/******************/`
 
 3. Open [your domain]/application/controllers/main.php controller, and copy the entire function segment into the one in your domain. For your convenience, the function begins and ends with
 
-```
-	/******************/
-	/**** JOIN MOD ****/
-	/******************/
-```
+    `/******************/`<br />
+	`/**** JOIN MOD ****/`<br />
+	`/******************/`
 
 4. Open [your domain]/application/controllers/personnel.php controller, and copy the entire function segment into the one in your domain. For your convenience, the function begins and ends with
 
-```
-	/******************/
-	/**** JOIN MOD ****/
-	/******************/
-```
+    `/******************/`<br />
+	`/**** JOIN MOD ****/`<br />
+	`/******************/`
 
 5. Upload application/language/english/join_lang.php to your [your domain]/application/language/english folder of your Nova install. Translate this page into other languages and upload
 them to the appropriate language directories. (If you would like your language included into a future release, please contact me via email.)
