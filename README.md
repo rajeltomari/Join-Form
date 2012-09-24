@@ -3,7 +3,7 @@ New Member Extension
 Developer: Donald Davis<br />
 Email: <ddavis34@gmail.com>
 
-Based from the UCIP Join Form developed by Dustin Lennon. This application is developed under the licenses of Nova and CodeIgniter.
+This application is developed under the licenses of Nova and CodeIgniter.
 
 Install Instructions
 --------------------
@@ -62,3 +62,7 @@ If the files were only updated by this mod (Join Form) then feel free to re-uplo
 
 ### NOTE
 If you already edited these files for another mod, you will have to be careful manually managing this extension into the existing files. I only recommend you do that if YOU REALLY KNOW WHAT YOU'RE DOING!
+
+Credits
+=======
+The code for this extension is based from the Nova-UCIP-Join-Form developed by demonicpagan at https://github.com/demonicpagan/Nova-UCIP-Join-Form.
