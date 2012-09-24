@@ -3,13 +3,11 @@ New Member Extension
 Developer: Donald Davis<br />
 Email: <ddavis34@gmail.com>
 
-Based from the UCIP Join Form developed by Dustin Lennon. This application is developed under the 
-licenses of Nova and CodeIgniter.
+Based from the UCIP Join Form developed by Dustin Lennon. This application is developed under the licenses of Nova and CodeIgniter.
 
 Install Instructions
 --------------------
-The following application will alter your join form identify new members to your group. To install this
-application you need to perform the following steps.
+The following application will alter your join form identify new members to your group. To install this application you need to perform the following steps.
 
 1. Use the included new_member.sql file to add the needed sql table fields to your nova installation.
 
